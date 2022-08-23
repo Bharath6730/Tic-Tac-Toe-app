@@ -1,0 +1,15 @@
+BackgroundColor         :   #1a2a33
+DialogBox-Color         :   #1f3641
+    
+Blue-Button             :   #31c3bd
+Blue-button-hover       :   #65e9e4
+Blue-button-shadow      :   #118c87
+    
+Yellow-Button           :   #f2b137
+Yellow-button-hover     :   #ffc860
+Yellow-Button-shadow    :   #cc8b13
+
+    --silver: #a8bfc9
+    --silver-hover: #dbe8ed
+    --dark-shadow: #10212a
+    --silver-shadow: #6b8997
