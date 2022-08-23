@@ -1,32 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:provider/provider.dart';
-// import 'package:tic_tac_toe/providers/game_provider.dart';
-import 'package:tic_tac_toe/providers/xo_button_provider.dart';
-// import 'package:tic_tac_toe/providers/xo_button_provider.dart';
-// import 'package:flutter_svg/avd.dart';
+import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/models/xo_button_class.dart';
+import 'package:tic_tac_toe/providers/game_provider.dart';
 
 class XOButton extends StatelessWidget {
-  final VoidCallback buttonClick;
   final int id;
-  final GameOptions buttonType;
-  const XOButton(
-      {Key? key,
-      required this.id,
-      required this.buttonClick,
-      required this.buttonType})
-      : super(key: key);
+  const XOButton({Key? key, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final shadowColor = Theme.of(context).appBarTheme.shadowColor as Color;
+    var themeData = Theme.of(context);
+    final shadowColor = themeData.appBarTheme.shadowColor as Color;
 
-    // GameProvider buttonData = Provider.of<GameProvider>(context);
+    GameProvider buttonData = Provider.of<GameProvider>(context);
+    ButtonType buttonType = buttonData.getButtonType(id);
+
+    String assetLink = buttonData.getAssetLink(id);
+
+    Color winnerBgColor;
+    Color winnerSvgColor;
+    if (buttonType == ButtonType.X) {
+      winnerBgColor = const Color(0xff31c3bd);
+    } else {
+      winnerBgColor = const Color(0xfff2b137);
+    }
+    winnerSvgColor = themeData.appBarTheme.backgroundColor as Color;
 
     return Container(
         decoration: BoxDecoration(
-            color: Theme.of(context).appBarTheme.backgroundColor,
-            // color: Colors.blue,
+            color: (buttonData.isWinnerButton(id) == true)
+                ? winnerBgColor
+                : themeData.appBarTheme.backgroundColor,
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(
@@ -38,18 +43,23 @@ class XOButton extends StatelessWidget {
         alignment: Alignment.center,
         child: Stack(
           children: [
-            if (buttonType != GameOptions.none)
+            if (assetLink != "")
               Positioned(
                 left: 25,
                 top: 25,
-                child: SvgPicture.asset((buttonType == GameOptions.X)
-                    ? "assets/images/x_filled.svg"
-                    : "assets/images/o_filled.svg"),
+                child: (buttonData.isWinnerButton(id))
+                    ? SvgPicture.asset(
+                        assetLink,
+                        color: winnerSvgColor,
+                      )
+                    : SvgPicture.asset(
+                        assetLink,
+                      ),
               ),
             Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: buttonClick,
+                onTap: () => buttonData.onButtonClick(id),
                 borderRadius: BorderRadius.circular(15),
                 child: Container(
                   width: double.infinity,
@@ -64,32 +74,3 @@ class XOButton extends StatelessWidget {
         ));
   }
 }
-
-// Stack(children: [
-//           InkWell(
-//             borderRadius: BorderRadius.circular(15),
-//             splashColor: Colors.blue,
-//             onTap: buttonClick,
-//             child: SizedBox(
-//               width: double.infinity,
-//               height: double.infinity,
-//             ),
-//           ),
-//           Positioned(
-//             left: 25,
-//             top: 25,
-//             child: SvgPicture.asset(assetLnk
-//                 // color: Colors.red,
-//                 ),
-//           ),
-//         ])
-
-// Works
-// InkWell(
-//           borderRadius: BorderRadius.circular(15),
-//           splashColor: Colors.amber,
-//           onTap: buttonClick,
-//           child: Ink(
-//             child: Center(child: SvgPicture.asset(assetLnk)),
-//           ),
-//         )
