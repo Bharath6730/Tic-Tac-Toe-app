@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:tic_tac_toe/models/xo_button_class.dart';
-import 'package:tic_tac_toe/providers/game_provider.dart';
+
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../models/utlility.dart';
+import '../../providers/game_provider.dart';
 
 class XOButton extends StatelessWidget {
   final int id;
@@ -11,42 +13,40 @@ class XOButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var themeData = Theme.of(context);
-    final shadowColor = themeData.appBarTheme.shadowColor as Color;
 
     GameProvider buttonData = Provider.of<GameProvider>(context);
     ButtonType buttonType = buttonData.getButtonType(id);
 
-    String assetLink = buttonData.getAssetLink(id);
+    String assetLink = getAssetLink(buttonType);
 
     Color winnerBgColor;
     Color winnerSvgColor;
     if (buttonType == ButtonType.X) {
-      winnerBgColor = const Color(0xff31c3bd);
+      winnerBgColor = AppTheme.xbuttonColor;
     } else {
-      winnerBgColor = const Color(0xfff2b137);
+      winnerBgColor = AppTheme.oButtonColor;
     }
     winnerSvgColor = themeData.appBarTheme.backgroundColor as Color;
 
     return Container(
+        margin: const EdgeInsets.only(bottom: 3),
         decoration: BoxDecoration(
             color: (buttonData.isWinnerButton(id) == true)
                 ? winnerBgColor
                 : themeData.appBarTheme.backgroundColor,
             borderRadius: BorderRadius.circular(15),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
-                color: shadowColor,
+                color: AppTheme.darkShadow,
+                offset: Offset(0, 3),
                 blurRadius: 2,
-                spreadRadius: 2,
-              )
+              ),
             ]),
         alignment: Alignment.center,
         child: Stack(
           children: [
             if (assetLink != "")
-              Positioned(
-                left: 25,
-                top: 25,
+              Center(
                 child: (buttonData.isWinnerButton(id))
                     ? SvgPicture.asset(
                         assetLink,

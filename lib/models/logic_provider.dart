@@ -1,15 +1,21 @@
+import './utlility.dart';
 import './xo_button_class.dart';
 
-enum Player { X, O }
-
 class LogicProvider {
+  ButtonType winner = ButtonType.X;
+
   Player playerType = Player.X;
   bool myTurn = true;
+  bool showModelScreen = false;
 
   List<int> xButtons = [];
   List<int> oButtons = [];
 
-  final List<XOButtonProvider> _data = List.generate(9, (index) {
+  int xWinCount = 0;
+  int tiesCount = 0;
+  int oWinCount = 0;
+
+  List<XOButtonProvider> _data = List.generate(9, (index) {
     return XOButtonProvider(id: index + 1, buttontype: ButtonType.none);
   });
 
@@ -33,45 +39,41 @@ class LogicProvider {
     return button.buttontype;
   }
 
-  String getAssetLink(int id) {
-    XOButtonProvider button = _data.firstWhere((element) => element.id == id);
-    var buttonType = button.buttontype;
-    if (buttonType == ButtonType.X) {
-      return "assets/images/x_filled.svg";
-    } else if (buttonType == ButtonType.O) {
-      return "assets/images/o_filled.svg";
-    } else {
-      return "";
-    }
-  }
-
-  void onButtonClick(int id) {
+  bool onButtonClick(int id) {
+    bool isChanged = false;
     XOButtonProvider button = _data.firstWhere((element) => element.id == id);
 
-    if (myTurn == false) return;
-    if (button.buttontype != ButtonType.none) return;
+    if (myTurn == false) return isChanged;
+    if (button.buttontype != ButtonType.none) return isChanged;
 
     if (playerType == Player.X) {
-      print("XPlayer ${button.buttontype}");
       button.buttontype = ButtonType.X;
       xButtons.add(id);
     } else {
-      print("OPlayer ${button.buttontype}");
       button.buttontype = ButtonType.O;
       oButtons.add(id);
     }
+    isChanged = true;
+    return isChanged;
   }
 
-  bool checkWinner(Player player) {
+  bool checkWinner() {
     bool ans = false;
     List<int> answerList = [];
+
+    if (xButtons.length + oButtons.length == 9) {
+      winner = ButtonType.none;
+      showModelScreen = true;
+      tiesCount = tiesCount + 1;
+      return ans;
+    }
 
     for (int i = 0; i < winChanceList.length; i++) {
       List<int> winList = winChanceList[i];
       int count = 0;
       for (int j = 0; j < winList.length; j++) {
         int winInt = winList[j];
-        if (player == Player.X) {
+        if (playerType == Player.X) {
           if (xButtons.contains(winInt)) {
             count++;
           }
@@ -84,6 +86,15 @@ class LogicProvider {
       if (count == 3) {
         ans = true;
         answerList = winList;
+
+        if (playerType == Player.X) {
+          winner = ButtonType.X;
+          xWinCount += 1;
+        } else {
+          winner = ButtonType.O;
+          oWinCount += 1;
+        }
+
         break;
       }
     }
@@ -95,11 +106,24 @@ class LogicProvider {
         button.isWinnerButton = true;
       }
     }
+
     return ans;
   }
 
   bool isWinnerButton(int id) {
     XOButtonProvider button = _data.firstWhere((element) => element.id == id);
     return button.isWinnerButton;
+  }
+
+  void resetGame() {
+    _data = List.generate(9, (index) {
+      return XOButtonProvider(id: index + 1, buttontype: ButtonType.none);
+    });
+
+    myTurn = true;
+    showModelScreen = false;
+
+    xButtons = [];
+    oButtons = [];
   }
 }

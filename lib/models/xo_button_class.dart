@@ -1,4 +1,4 @@
-enum ButtonType { X, O, none }
+import './utlility.dart';
 
 class XOButtonProvider {
   int id;
