@@ -40,6 +40,8 @@ class GameProvider extends LogicProvider with ChangeNotifier {
 
     notifyListeners();
   }
+}
+
   // void fillNextButton() {
   //   if (myTurn == true) return;
 
@@ -70,4 +72,3 @@ class GameProvider extends LogicProvider with ChangeNotifier {
   //   }
   //   return randomInt;
   // }
-}
