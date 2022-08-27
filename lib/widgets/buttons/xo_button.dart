@@ -2,20 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../models/xo_button_class.dart';
 
-import '../../models/utlility.dart';
-import '../../providers/game_provider.dart';
+import '../../utilities/utlility.dart';
 
 class XOButton extends StatelessWidget {
   final int id;
-  const XOButton({Key? key, required this.id}) : super(key: key);
+  final Function onButtonClick;
+  const XOButton({Key? key, required this.id, required this.onButtonClick})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var themeData = Theme.of(context);
 
-    GameProvider buttonData = Provider.of<GameProvider>(context);
-    ButtonType buttonType = buttonData.getButtonType(id);
+    XOButtonProvider buttonData = Provider.of<XOButtonProvider>(context);
+    ButtonType buttonType = buttonData.buttontype;
 
     String assetLink = getAssetLink(buttonType);
 
@@ -31,7 +33,7 @@ class XOButton extends StatelessWidget {
     return Container(
         margin: const EdgeInsets.only(bottom: 3),
         decoration: BoxDecoration(
-            color: (buttonData.isWinnerButton(id) == true)
+            color: (buttonData.isWinnerButton == true)
                 ? winnerBgColor
                 : themeData.appBarTheme.backgroundColor,
             borderRadius: BorderRadius.circular(15),
@@ -47,7 +49,7 @@ class XOButton extends StatelessWidget {
           children: [
             if (assetLink != "")
               Center(
-                child: (buttonData.isWinnerButton(id))
+                child: (buttonData.isWinnerButton)
                     ? SvgPicture.asset(
                         assetLink,
                         color: winnerSvgColor,
@@ -59,7 +61,7 @@ class XOButton extends StatelessWidget {
             Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: () => buttonData.onButtonClick(id),
+                onTap: () => onButtonClick(id),
                 borderRadius: BorderRadius.circular(15),
                 child: Container(
                   width: double.infinity,

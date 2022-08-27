@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import './../models/utlility.dart';
+import '../utilities/utlility.dart';
 import 'buttons/submit_button.dart';
-
-void showGameOverDialog(context, VoidCallback resetGame, ButtonType winner) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return ModelWidget(
-        resetGame: resetGame,
-        winner: winner,
-      );
-    },
-  );
-}
 
 class ModelWidget extends StatelessWidget {
   final VoidCallback resetGame;

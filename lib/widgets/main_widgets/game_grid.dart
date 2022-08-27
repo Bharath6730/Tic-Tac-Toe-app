@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/models/logic_provider.dart';
+import 'package:tic_tac_toe/models/xo_button_class.dart';
 
 import '../buttons/xo_button.dart';
 
 class GameGrid extends StatelessWidget {
-  const GameGrid({Key? key}) : super(key: key);
+  final LogicProvider xoList;
+  const GameGrid({Key? key, required this.xoList}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +24,12 @@ class GameGrid extends StatelessWidget {
           crossAxisSpacing: 15,
         ),
         itemBuilder: ((context, index) {
-          return XOButton(
-            id: index + 1,
+          return ChangeNotifierProvider<XOButtonProvider>.value(
+            value: xoList.getData()[index],
+            child: XOButton(
+              id: index + 1,
+              onButtonClick: xoList.onButtonClick,
+            ),
           );
         }),
         itemCount: 9);

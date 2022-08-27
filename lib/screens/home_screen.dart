@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe/models/utlility.dart';
+import 'package:tic_tac_toe/utilities/utlility.dart';
+
 import 'package:tic_tac_toe/widgets/buttons/submit_button.dart';
 // import 'package:socket_io_client/socket_io_client.dart' as IO;
-import 'package:tic_tac_toe/widgets/main_widgets/center_app_icon.dart';
+// import 'package:tic_tac_toe/widgets/main_widgets/center_app_icon.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -31,28 +32,28 @@ class HomeScreen extends StatelessWidget {
     // connect();
     return Scaffold(
       drawer: const Drawer(),
-      appBar: AppBar(
-        leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
-        title: const CenterAppIcon(),
-        centerTitle: true,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Container(
-              width: 40,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(
-                    "https://www.clipartkey.com/mpngs/m/152-1520367_user-profile-default-image-png-clipart-png-download.png",
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
+      // appBar: AppBar(
+      //   leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+      //   title: const CenterAppIcon(),
+      //   centerTitle: true,
+      //   actions: [
+      //     Padding(
+      //       padding: const EdgeInsets.all(10),
+      //       child: Container(
+      //         width: 40,
+      //         decoration: const BoxDecoration(
+      //           shape: BoxShape.circle,
+      //           image: DecorationImage(
+      //             fit: BoxFit.cover,
+      //             image: NetworkImage(
+      //               "https://www.clipartkey.com/mpngs/m/152-1520367_user-profile-default-image-png-clipart-png-download.png",
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     )
+      //   ],
+      // ),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           SubmitButton(
@@ -80,10 +81,10 @@ class HomeScreen extends StatelessWidget {
             splashColor: AppTheme.oHoverColor,
             radius: 15,
             onPressed: () {
-              Navigator.pushNamed(context, "/passAndPlay");
+              Navigator.pushNamed(context, "/playVsCPU");
             },
             child: Text(
-              "Pass Vs Computer",
+              "Play Vs Computer",
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),

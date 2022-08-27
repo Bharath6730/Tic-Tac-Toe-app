@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:tic_tac_toe/models/utlility.dart';
-import 'package:tic_tac_toe/providers/game_provider.dart';
+import 'package:tic_tac_toe/utilities/utlility.dart';
+import 'package:tic_tac_toe/providers/pass_and_play_provider.dart';
 import 'package:tic_tac_toe/widgets/buttons/center_button.dart';
 
 class GameFooter extends StatelessWidget {
+  final int xWinCount;
+  final int oWinCount;
+  final int tiesCount;
+  final String? xCustomName;
+  final String? oCustomName;
   const GameFooter({
     Key? key,
+    required this.xWinCount,
+    required this.oWinCount,
+    required this.tiesCount,
+    this.oCustomName,
+    this.xCustomName,
   }) : super(key: key);
 
   @override
@@ -26,13 +36,10 @@ class GameFooter extends StatelessWidget {
               onPressed: () {},
               radius: 15,
               pad: const [10, 15],
-              child: Consumer<GameProvider>(
-                builder: (_, value, __) {
-                  return FooterButtonLabel(
-                    type: ButtonType.X,
-                    score: value.xWinCount,
-                  );
-                },
+              child: FooterButtonLabel(
+                type: ButtonType.X,
+                score: xWinCount,
+                customeName: xCustomName,
               )),
           CenterButton(
               color: Colors.black,
@@ -42,12 +49,10 @@ class GameFooter extends StatelessWidget {
               onPressed: () {},
               radius: 15,
               pad: const [10, 28],
-              child: Consumer<GameProvider>(builder: (_, value, __) {
-                return FooterButtonLabel(
-                  type: ButtonType.none,
-                  score: value.tiesCount,
-                );
-              })),
+              child: FooterButtonLabel(
+                type: ButtonType.none,
+                score: tiesCount,
+              )),
           CenterButton(
               color: Colors.black,
               shadowColor: AppTheme.oShadowColor,
@@ -56,12 +61,11 @@ class GameFooter extends StatelessWidget {
               onPressed: () {},
               radius: 15,
               pad: const [10, 15],
-              child: Consumer<GameProvider>(builder: (_, value, __) {
-                return FooterButtonLabel(
-                  type: ButtonType.O,
-                  score: value.oWinCount,
-                );
-              })),
+              child: FooterButtonLabel(
+                type: ButtonType.O,
+                score: oWinCount,
+                customeName: oCustomName,
+              )),
         ],
       ),
     );
@@ -71,32 +75,41 @@ class GameFooter extends StatelessWidget {
 class FooterButtonLabel extends StatelessWidget {
   final int score;
   final ButtonType type;
-  const FooterButtonLabel({Key? key, required this.score, required this.type})
+  final String? customeName;
+  const FooterButtonLabel(
+      {Key? key, required this.score, required this.type, this.customeName})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      (type != ButtonType.none)
-          ? Row(
-              children: [
-                Text(
-                  (type == ButtonType.X) ? "X" : "O",
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w900,
-                      ),
-                ),
-                Text(
-                  " Player",
-                  style: Theme.of(context).textTheme.bodySmall,
-                )
-              ],
-            )
-          : Text(
-              "TIES",
+      if (type != ButtonType.none)
+        Row(
+          children: [
+            Text(
+              (customeName != null) ? customeName as String : "Player",
               style: Theme.of(context).textTheme.bodySmall,
-              textAlign: TextAlign.center,
             ),
+            Text(
+              (customeName != null)
+                  ? (type == ButtonType.X)
+                      ? "- X"
+                      : "- O"
+                  : (type == ButtonType.X)
+                      ? " X"
+                      : " O",
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
+            ),
+          ],
+        )
+      else
+        Text(
+          "TIES",
+          style: Theme.of(context).textTheme.bodySmall,
+          textAlign: TextAlign.center,
+        ),
       const SizedBox(
         height: 4,
       ),

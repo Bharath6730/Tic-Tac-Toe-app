@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:tic_tac_toe/models/utlility.dart';
-import 'package:tic_tac_toe/providers/game_provider.dart';
+import 'package:tic_tac_toe/utilities/utlility.dart';
 import 'package:tic_tac_toe/widgets/buttons/center_button.dart';
 import 'package:tic_tac_toe/widgets/buttons/submit_button.dart';
 
 class GameHeader extends StatelessWidget {
-  const GameHeader({
-    Key? key,
-  }) : super(key: key);
+  final String currentPlayer;
+  const GameHeader({Key? key, required this.currentPlayer}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Player currentPlayer = Provider.of<GameProvider>(context).playerType;
-    String currentPlayerString = (currentPlayer == Player.X) ? "X" : "O";
+    // Player currentPlayer = Provider.of<PassAndPlayProvider>(context).playerType;
+    // String currentPlayerString = (currentPlayer == Player.X) ? "X" : "O";
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Row(
@@ -23,7 +20,7 @@ class GameHeader extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.25,
           ),
           CenterButton(
-            contentText: "$currentPlayerString TURN",
+            contentText: "$currentPlayer TURN",
             color: AppTheme.silverButtonColor,
             shadowColor: AppTheme.darkShadow,
             backgroundColor: AppTheme.dialogColor,
