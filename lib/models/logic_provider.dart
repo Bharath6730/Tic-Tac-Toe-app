@@ -128,4 +128,12 @@ class LogicProvider {
     xButtons = [];
     oButtons = [];
   }
+
+  void togglePlayer() {
+    if (playerType == Player.X) {
+      playerType = Player.O;
+    } else {
+      playerType = Player.X;
+    }
+  }
 }

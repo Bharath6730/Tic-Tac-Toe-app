@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:tic_tac_toe/providers/pass_and_play_provider.dart';
 import 'package:tic_tac_toe/providers/play_vs_cpu_provider.dart';
-// import 'package:tic_tac_toe/utilities/utlility.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/center_app_icon.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/game_footer.dart';
-// import 'package:tic_tac_toe/widgets/main_widgets/game_footer.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/game_grid.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/game_header.dart';
 import 'package:tic_tac_toe/widgets/model_widget.dart';
@@ -29,20 +26,23 @@ class PlayVsCPUScreen extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (context) => ModelWidget(
-                      resetGame: value.resetGame, winner: value.winner),
+                    resetGame: value.resetGame,
+                    winner: value.winner,
+                    winnerText: value.didIWin ? "You Won!" : "CPU Wins!",
+                    // whoWon: "CPU Wins!",
+                  ),
                 );
               });
             }
-            String currentPlayerString = (value.myTurn) ? "Your" : "CPU's";
+            // String currentPlayerString = (value.myTurn) ? "Your" : "CPU's";
             return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 80),
                   GameHeader(
-                    currentPlayer: currentPlayerString,
+                    currentPlayer: (value.myTurn) ? "Your" : "Opponent's",
                   ),
-                  Consumer<PlayVsCPUProvider>(
-                      builder: (_, value, __) => GameGrid(xoList: value)),
+                  GameGrid(xoList: value),
                   const SizedBox(height: 20),
                   GameFooter(
                     xWinCount: value.xWinCount,

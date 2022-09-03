@@ -16,9 +16,9 @@ class GameHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.25,
-          ),
+          // SizedBox(
+          //   width: MediaQuery.of(context).size.width * 0.25,
+          // ),
           CenterButton(
             contentText: "$currentPlayer TURN",
             color: AppTheme.silverButtonColor,
@@ -28,20 +28,20 @@ class GameHeader extends StatelessWidget {
             onPressed: () {},
             radius: 10,
           ),
-          const SizedBox(
-            width: 10,
-          ),
-          SubmitButton(
-            color: AppTheme.silverButtonColor,
-            shadowColor: AppTheme.darkShadow,
-            backgroundColor: AppTheme.dialogColor,
-            splashColor: AppTheme.darkShadow,
-            onPressed: () {},
-            radius: 10,
-            child: const Center(
-              child: Icon(Icons.refresh_rounded),
-            ),
-          ),
+          // const SizedBox(
+          //   width: 10,
+          // ),
+          // SubmitButton(
+          //   color: AppTheme.silverButtonColor,
+          //   shadowColor: AppTheme.darkShadow,
+          //   backgroundColor: AppTheme.dialogColor,
+          //   splashColor: AppTheme.darkShadow,
+          //   onPressed: () {},
+          //   radius: 10,
+          //   child: const Center(
+          //     child: Icon(Icons.refresh_rounded),
+          //   ),
+          // ),
         ],
       ),
     );

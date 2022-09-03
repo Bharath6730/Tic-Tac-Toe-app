@@ -30,6 +30,7 @@ class PassAndPlayScreen extends StatelessWidget {
                     builder: (context) => ModelWidget(
                           resetGame: value.resetGame,
                           winner: value.winner,
+                          winnerText: "You Won!",
                         ));
               });
             }

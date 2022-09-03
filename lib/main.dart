@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:tic_tac_toe/screens/pass_and_play_screen.dart';
 import 'package:tic_tac_toe/screens/home_screen.dart';
+import 'package:tic_tac_toe/screens/play_online_screen.dart';
 import 'package:tic_tac_toe/screens/play_vs_cpu_screen.dart';
 
 // import './screens/game_screen.dart';
@@ -23,6 +25,10 @@ class MyApp extends StatelessWidget {
               shadowColor: Color(0xff10212a)),
           scaffoldBackgroundColor: const Color(0xff1a2a33),
           textTheme: const TextTheme(
+              bodyLarge: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 24,
+                  color: Colors.black),
               bodyMedium: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 20,
@@ -35,7 +41,8 @@ class MyApp extends StatelessWidget {
       routes: {
         "/": (context) => const HomeScreen(),
         "/passAndPlay": (context) => const PassAndPlayScreen(),
-        "/playVsCPU": (context) => const PlayVsCPUScreen()
+        "/playVsCPU": (context) => const PlayVsCPUScreen(),
+        "/playOnline": (context) => const PlayOnlineScreen(),
       },
     );
   }

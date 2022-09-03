@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import 'package:tic_tac_toe/utilities/utlility.dart';
-import 'package:tic_tac_toe/providers/pass_and_play_provider.dart';
 import 'package:tic_tac_toe/widgets/buttons/center_button.dart';
 
 class GameFooter extends StatelessWidget {

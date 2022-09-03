@@ -1,31 +1,12 @@
 import 'package:flutter/material.dart';
+
 import 'package:tic_tac_toe/utilities/utlility.dart';
 
 import 'package:tic_tac_toe/widgets/buttons/submit_button.dart';
-// import 'package:socket_io_client/socket_io_client.dart' as IO;
 // import 'package:tic_tac_toe/widgets/main_widgets/center_app_icon.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-  // void connect() {
-  //   print("Running");
-  //   // MessageModel messageModel = MessageModel(sourceId: widget.sourceChat.id.toString(),targetId: );
-  //   IO.Socket socket =
-  //       IO.io("https://bharath6730.herokuapp.com/", <String, dynamic>{
-  //     "transports": ["websocket"],
-  //     "autoConnect": false,
-  //   });
-  //   socket.connect();
-  //   socket.onConnect((data) {
-  //     print("Connected");
-  //     socket.on("messageFromServer", (msg) {
-  //       // final msgString = json.decode(msg.toString());
-  //       print(msg);
-  //     });
-  //     socket.emit("messageToServer", "Bro what the fuck it works");
-  //   });
-  //   print(socket.connected);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +38,6 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           SubmitButton(
-            color: Colors.black,
             shadowColor: AppTheme.oShadowColor,
             backgroundColor: AppTheme.oButtonColor,
             splashColor: AppTheme.oHoverColor,
@@ -75,7 +55,6 @@ class HomeScreen extends StatelessWidget {
             height: 10,
           ),
           SubmitButton(
-            color: Colors.black,
             shadowColor: AppTheme.oShadowColor,
             backgroundColor: AppTheme.oButtonColor,
             splashColor: AppTheme.oHoverColor,
@@ -93,13 +72,12 @@ class HomeScreen extends StatelessWidget {
             height: 10,
           ),
           SubmitButton(
-            color: Colors.black,
             shadowColor: AppTheme.oShadowColor,
             backgroundColor: AppTheme.oButtonColor,
             splashColor: AppTheme.oHoverColor,
             radius: 15,
             onPressed: () {
-              Navigator.pushNamed(context, "/passAndPlay");
+              Navigator.pushNamed(context, "/playOnline");
             },
             child: Text(
               "Play Online",

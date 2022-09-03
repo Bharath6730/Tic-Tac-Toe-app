@@ -6,6 +6,7 @@ import '../utilities/utlility.dart';
 import './../models/logic_provider.dart';
 
 class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
+  bool didIWin = false;
   @override
   bool onButtonClick(int id) {
     if (!myTurn) return false;
@@ -14,31 +15,23 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
     if (!isChanged) return false;
     myTurn = false;
 
-    bool winner = false;
-    winner = super.checkWinner();
+    bool checkWinner = false;
+    checkWinner = super.checkWinner();
 
-    if (winner) {
+    if (checkWinner) {
       showModelScreen = true;
+      didIWin = true;
     }
     notifyListeners();
 
-    if (!winner) fillNextButton();
+    if (!checkWinner) fillNextButton();
 
     return isChanged;
-  }
-
-  void togglePlayer() {
-    if (playerType == Player.X) {
-      playerType = Player.O;
-    } else {
-      playerType = Player.X;
-    }
   }
 
   @override
   void resetGame() {
     super.resetGame();
-
 
     notifyListeners();
   }
@@ -59,6 +52,7 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
     if (winner) {
       myTurn = false;
       showModelScreen = true;
+      didIWin = false;
     } else {
       togglePlayer();
       myTurn = true;

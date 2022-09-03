@@ -7,7 +7,13 @@ import 'buttons/submit_button.dart';
 class ModelWidget extends StatelessWidget {
   final VoidCallback resetGame;
   final ButtonType winner;
-  const ModelWidget({Key? key, required this.resetGame, required this.winner})
+  final String winnerText;
+
+  const ModelWidget(
+      {Key? key,
+      required this.resetGame,
+      required this.winner,
+      required this.winnerText})
       : super(
           key: key,
         );
@@ -18,11 +24,11 @@ class ModelWidget extends StatelessWidget {
     bool itsADraw = false;
 
     if (winner != ButtonType.none) {
-      itsADraw = true;
       winColor = (winner == ButtonType.X)
           ? AppTheme.xbuttonColor
           : AppTheme.oButtonColor;
     } else {
+      itsADraw = true;
       winColor = Colors.red;
     }
 
@@ -38,13 +44,13 @@ class ModelWidget extends StatelessWidget {
             color: Theme.of(context).appBarTheme.backgroundColor),
         padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
         child: Column(children: [
-          Text(itsADraw ? "You Won!" : "ITS A TIE!",
+          Text((!itsADraw) ? winnerText : "ITS A TIE!",
               style: const TextStyle(fontSize: 20, color: Colors.white),
               textAlign: TextAlign.center),
           const SizedBox(
             height: 25,
           ),
-          itsADraw
+          (!itsADraw)
               ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   SvgPicture.asset(
                     getAssetLink(winner),
@@ -100,7 +106,6 @@ class ModelWidget extends StatelessWidget {
                 shadowColor: AppTheme.silverShadowColor,
                 splashColor: AppTheme.silverHoverColor,
                 radius: 15,
-                color: Colors.black,
                 onPressed: () {
                   Navigator.of(context).pop();
                   if (Navigator.canPop(context)) {
@@ -119,7 +124,6 @@ class ModelWidget extends StatelessWidget {
               SubmitButton(
                 backgroundColor: AppTheme.oButtonColor,
                 shadowColor: AppTheme.oShadowColor,
-                color: Colors.black,
                 splashColor: AppTheme.oHoverColor,
                 radius: 15,
                 onPressed: () {

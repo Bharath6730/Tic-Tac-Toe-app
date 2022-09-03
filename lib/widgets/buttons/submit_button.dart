@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class SubmitButton extends StatelessWidget {
   final Widget child;
-  final Color color;
   final Color shadowColor;
   final Color backgroundColor;
   final Color splashColor;
@@ -12,7 +11,6 @@ class SubmitButton extends StatelessWidget {
   const SubmitButton({
     Key? key,
     required this.child,
-    required this.color,
     required this.shadowColor,
     required this.backgroundColor,
     required this.splashColor,
