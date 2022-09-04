@@ -36,6 +36,93 @@ class PlayOnlineScreen extends StatelessWidget {
             );
           });
         }
+        if (value.showPlayerLeftDialog) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            showDialog(
+                context: context,
+                builder: (context) => Dialog(
+                      backgroundColor: Colors.transparent,
+                      insetPadding: const EdgeInsets.all(20),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      child: Container(
+                        width: double.infinity,
+                        height: 300,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color:
+                                Theme.of(context).appBarTheme.backgroundColor),
+                        padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                        child: Column(children: [
+                          const Text(
+                            "Opponent Left the Game",
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(
+                            height: 35,
+                          ),
+                          const Text(
+                              "You can either wait for the player to join again or return to main page.",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.normal),
+                              textAlign: TextAlign.center),
+                          const SizedBox(
+                            height: 35,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              SubmitButton(
+                                backgroundColor: AppTheme.silverButtonColor,
+                                shadowColor: AppTheme.silverShadowColor,
+                                splashColor: AppTheme.silverHoverColor,
+                                radius: 15,
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  if (Navigator.canPop(context)) {
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                                child: Text(
+                                  "Return",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: Colors.black),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              SubmitButton(
+                                backgroundColor: AppTheme.oButtonColor,
+                                shadowColor: AppTheme.oShadowColor,
+                                splashColor: AppTheme.oHoverColor,
+                                radius: 15,
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  value.waitForPlayer();
+                                },
+                                child: Text(
+                                  "Wait for Player",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(color: Colors.black),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          )
+                        ]),
+                      ),
+                    ));
+          });
+        }
         return Scaffold(
             appBar: AppBar(
                 title: const CenterAppIcon(),
@@ -139,7 +226,6 @@ class PlayOnlineScreen extends StatelessWidget {
                                     if (roomTextController.text.isNotEmpty) {
                                       value.joinGame(roomTextController.text);
                                     }
-                                    ;
                                   },
                                   radius: 15,
                                   child: Text("Join Game",
@@ -161,8 +247,9 @@ class PlayOnlineScreen extends StatelessWidget {
                                     horizontal: 25,
                                   ),
                                   child: CenterButton(
-                                    contentText:
-                                        "Hey, ${value.myName}. Please ask your friend to enter Game ID: ${value.room}. Waiting for player 2...",
+                                    contentText: (value.opponentLeft)
+                                        ? "Waiting for Opponent to connect again.. Room Id : ${value.room}"
+                                        : "Hey, ${value.myName}. Please ask your friend to enter Game ID: ${value.room}. Waiting for player 2...",
                                     color: AppTheme.silverButtonColor,
                                     shadowColor: AppTheme.darkShadow,
                                     backgroundColor: AppTheme.dialogColor,

@@ -14,6 +14,10 @@ class Message {
   }
 }
 
+// TODO :
+// File Formating and code refactoring
+// GetIT local storage ... save states while exit
+
 class WinnerMessage {
   int? X;
   int? Y;
@@ -37,6 +41,44 @@ class WinnerMessage {
         X: int.tryParse(json["X"].toString()[1]),
         Y: int.tryParse(json["Y"].toString()[1]),
         whoStarted: (json["whoStarted"] == "X") ? Player.X : Player.O);
+  }
+}
+
+class ReJoin extends GameMessage {
+  int totalGames;
+  int myScore;
+  int draw;
+  bool myTurn;
+  Player player;
+  String oppName;
+
+  ReJoin(
+      {required super.room,
+      super.oList,
+      super.xList,
+      super.player1,
+      super.player2,
+      required this.totalGames,
+      required this.myTurn,
+      required this.player,
+      required this.oppName,
+      required this.draw,
+      required this.myScore});
+
+  factory ReJoin.fromJson(Map<String, dynamic> json) {
+    // print(json);
+    return ReJoin(
+        room: json["room"],
+        player2: json["player2"],
+        oList: json["oList"],
+        xList: json["xList"],
+        player1: json["player1"],
+        draw: json["draw"],
+        myScore: json["myScore"],
+        myTurn: json["myTurn"],
+        oppName: json["oppName"],
+        player: (json["Player"] == "X") ? Player.X : Player.O,
+        totalGames: json["TotalGames"]);
   }
 }
 
@@ -74,7 +116,8 @@ class GameMessage {
 }
 
 class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
-  io.Socket socket = io.io("http://172.20.139.185:3000/", <String, dynamic>{
+  io.Socket socket =
+      io.io("https://bharath6730.herokuapp.com/", <String, dynamic>{
     "transports": ["websocket"],
     "autoConnect": false,
   });
@@ -92,6 +135,10 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   bool didIWIn = false;
   bool didIStartFirst = false;
 
+  bool showPlayerLeftDialog = false;
+  bool myTurnCopy = false;
+  bool opponentLeft = false;
+
   PlayOnlineProvider({required this.context}) {
     if (!connected) initializeSocket(context);
   }
@@ -101,27 +148,23 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   void initializeSocket(context) {
     socket.connect();
 
-    socket.onError((data) {
-      print(data);
-      print("1");
-    });
+    // socket.onError((data) {
+    // });
 
-    socket.onConnectTimeout((data) {
-      print(data);
-      print("3");
-    });
-    socket.onerror((data) => print(data));
+    // socket.onConnectTimeout((data) {
+
+    // });
+    // socket.onerror((data) => print(data));
     socket.onConnectError((data) {
-      print(data);
       showSnackBar("There was error .Please try again later.");
     });
 
-    socket.onPing((data) {
-      print(data);
-    });
-    socket.onPong((data) {
-      print(data);
-    });
+    // socket.onPing((data) {
+    //   print(data);
+    // });
+    // socket.onPong((data) {
+    //   print(data);
+    // });
 
     socket.onConnect((data) {
       socket.on("messageFromServer", (msg) {
@@ -145,30 +188,90 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
     });
 
     socket.on("arrange", (data) {
-      GameMessage gameMessage = GameMessage.fromJson(data);
-      opponentName = gameMessage.player2 as String;
-      showRoomAnouncement = false;
-      iAmPlayer1 = true;
-      myTurn = true;
+      if (!opponentLeft) {
+        GameMessage gameMessage = GameMessage.fromJson(data);
+        opponentName = gameMessage.player2 as String;
+        showRoomAnouncement = false;
+        iAmPlayer1 = true;
+        myTurn = true;
 
-      socket.emit("p1Detail",
-          {"player1": myName, "player2": opponentName, "room": room});
+        socket.emit("p1Detail",
+            {"player1": myName, "player2": opponentName, "room": room});
 
+        notifyListeners();
+      } else {
+        // Reconnect player
+
+        myTurn = myTurnCopy;
+        showRoomAnouncement = false;
+        showPlayerLeftDialog = false;
+        opponentLeft = false;
+
+        List<String> xList = xButtons.map((e) => "0${e.toString()}").toList();
+        List<String> oList = oButtons.map((e) => "0${e.toString()}").toList();
+
+        socket.emit("playerAlreadyLeft", {
+          "xList": xList,
+          "oList": oList,
+          "myScore": xWinCount,
+          "TotalGames": xWinCount + tiesCount + oWinCount,
+          "draw": tiesCount,
+          "oppName": opponentName,
+          "Player": (myButtonType == Player.X) ? "X" : "O",
+          "myTurn": myTurn,
+          "player1": myName,
+          "room": room,
+        });
+      }
       notifyListeners();
     });
 
     socket.on("details", (data) {
-      GameMessage gameMessage = GameMessage.fromJson(data);
-      room = gameMessage.room;
-      myButtonType = Player.O;
-      playerType = Player.O;
-      opponentName = gameMessage.player1 as String;
+      if (!data.toString().contains("TotalGames")) {
+        GameMessage gameMessage = GameMessage.fromJson(data);
+        room = gameMessage.room;
+        myButtonType = Player.O;
+        playerType = Player.O;
+        opponentName = gameMessage.player1 as String;
 
-      myTurn = false;
-      iAmPlayer1 = false;
-      showGameScreen = true;
-      showRoomAnouncement = false;
+        myTurn = false;
+        iAmPlayer1 = false;
+        showGameScreen = true;
+        showRoomAnouncement = false;
+      } else {
+        ReJoin rejoinMessage = ReJoin.fromJson(data);
 
+        opponentName = rejoinMessage.player1 as String;
+        room = rejoinMessage.room;
+        playerType = Player.X;
+        rejoinMessage.xList!.forEach((element) {
+          element = int.parse(element);
+          super.onButtonClick(element);
+        });
+
+        playerType = Player.O;
+        rejoinMessage.oList!.forEach((element) {
+          element = int.parse(element);
+          super.onButtonClick(element);
+        });
+
+        if (rejoinMessage.player == Player.X) {
+          xWinCount = rejoinMessage.myScore;
+          tiesCount = rejoinMessage.draw;
+          oWinCount = rejoinMessage.totalGames - tiesCount - xWinCount;
+          myButtonType = Player.O;
+          iAmPlayer1 = false;
+        } else {
+          tiesCount = rejoinMessage.draw;
+          oWinCount = rejoinMessage.myScore;
+          xWinCount = rejoinMessage.totalGames - tiesCount - oWinCount;
+          myButtonType = Player.X;
+          iAmPlayer1 = true;
+        }
+        myTurn = !rejoinMessage.myTurn;
+        showGameScreen = true;
+        showRoomAnouncement = false;
+      }
       notifyListeners();
     });
 
@@ -243,6 +346,18 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
       showSnackBar(message.data);
     });
 
+    socket.on("playerLeft", (_) {
+      // print(data);
+      // showRoomAnouncement = true;
+      showModelScreen = false;
+      showPlayerLeftDialog = true;
+      myTurnCopy = myTurn;
+      myTurn = false;
+      opponentLeft = true;
+
+      notifyListeners();
+    });
+
     connected = socket.connected;
   }
 
@@ -265,6 +380,13 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
 
   void joinGame(String roomName) {
     socket.emit("joinGame", {"player2": myName, "room": roomName});
+  }
+
+  void waitForPlayer() {
+    showPlayerLeftDialog = false;
+    showRoomAnouncement = true;
+
+    notifyListeners();
   }
 
   @override

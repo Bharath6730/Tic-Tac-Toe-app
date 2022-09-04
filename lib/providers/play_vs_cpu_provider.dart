@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
-import '../utilities/utlility.dart';
 import './../models/logic_provider.dart';
 
 class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
