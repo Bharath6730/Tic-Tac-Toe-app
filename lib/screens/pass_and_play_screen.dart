@@ -10,12 +10,16 @@ import '../widgets/main_widgets/game_grid.dart';
 import '../widgets/main_widgets/game_footer.dart';
 
 class PassAndPlayScreen extends StatelessWidget {
-  const PassAndPlayScreen({Key? key}) : super(key: key);
+  const PassAndPlayScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final Player player = ModalRoute.of(context)?.settings.arguments as Player;
+
     return ChangeNotifierProvider(
-      create: (context) => PassAndPlayProvider(),
+      create: (context) => PassAndPlayProvider(playerType: player),
       child: Scaffold(
         appBar: AppBar(
           title: const CenterAppIcon(),

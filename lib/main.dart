@@ -19,7 +19,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData.dark().copyWith(
+      // theme: ThemeData.dark().copyWith(fontFamily : ,
+      theme: ThemeData(
+          fontFamily: "Outfit",
           appBarTheme: const AppBarTheme(
               backgroundColor: Color(0xff1f3641),
               shadowColor: Color(0xff10212a)),

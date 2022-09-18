@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart';
 import './../models/logic_provider.dart';
 
 class PassAndPlayProvider extends LogicProvider with ChangeNotifier {
+  PassAndPlayProvider({required playerType}) {
+    this.playerType = playerType;
+  }
   @override
   bool onButtonClick(int id) {
     if (myTurn == false) return false;

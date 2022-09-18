@@ -27,4 +27,5 @@ class AppTheme {
 
   static const Color darkShadow = Color(0xff10212a);
   static const Color dialogColor = Color(0xff1f3641);
+  static const Color darkBackground = Color(0xff1a2a33);
 }

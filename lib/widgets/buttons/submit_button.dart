@@ -7,20 +7,23 @@ class SubmitButton extends StatelessWidget {
   final Color splashColor;
   final VoidCallback onPressed;
   final double radius;
+  final BoxConstraints? size;
 
-  const SubmitButton({
-    Key? key,
-    required this.child,
-    required this.shadowColor,
-    required this.backgroundColor,
-    required this.splashColor,
-    required this.onPressed,
-    required this.radius,
-  }) : super(key: key);
+  const SubmitButton(
+      {Key? key,
+      required this.child,
+      required this.shadowColor,
+      required this.backgroundColor,
+      required this.splashColor,
+      required this.onPressed,
+      required this.radius,
+      this.size})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      constraints: size,
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
           color: backgroundColor,

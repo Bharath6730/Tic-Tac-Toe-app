@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/providers/play_vs_cpu_provider.dart';
+import 'package:tic_tac_toe/utilities/utlility.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/center_app_icon.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/game_footer.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/game_grid.dart';
@@ -12,8 +13,10 @@ class PlayVsCPUScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Player selectedPlayer =
+        ModalRoute.of(context)?.settings.arguments as Player;
     return ChangeNotifierProvider(
-      create: (context) => PlayVsCPUProvider(),
+      create: (context) => PlayVsCPUProvider(selectedPlayer),
       child: Scaffold(
         appBar: AppBar(
           title: const CenterAppIcon(),
@@ -29,18 +32,16 @@ class PlayVsCPUScreen extends StatelessWidget {
                     resetGame: value.resetGame,
                     winner: value.winner,
                     winnerText: value.didIWin ? "You Won!" : "CPU Wins!",
-                    // whoWon: "CPU Wins!",
                   ),
                 );
               });
             }
-            // String currentPlayerString = (value.myTurn) ? "Your" : "CPU's";
             return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(height: 80),
                   GameHeader(
-                    currentPlayer: (value.myTurn) ? "Your" : "Opponent's",
+                    currentPlayer: (value.myTurn) ? "Your" : "CPU's",
                   ),
                   GameGrid(xoList: value),
                   const SizedBox(height: 20),
@@ -48,8 +49,8 @@ class PlayVsCPUScreen extends StatelessWidget {
                     xWinCount: value.xWinCount,
                     oWinCount: value.oWinCount,
                     tiesCount: value.tiesCount,
-                    xCustomName: "You",
-                    oCustomName: "CPU",
+                    xCustomName: selectedPlayer == Player.X ? "You" : "CPU",
+                    oCustomName: selectedPlayer == Player.X ? "CPU" : "You",
                   ),
                 ]);
           },

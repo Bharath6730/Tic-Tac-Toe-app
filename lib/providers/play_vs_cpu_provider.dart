@@ -1,10 +1,21 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
+import 'package:tic_tac_toe/utilities/utlility.dart';
 
 import './../models/logic_provider.dart';
 
 class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
+  Player myPlayerType = Player.X;
+  Player whoStartedFirst = Player.X;
+  PlayVsCPUProvider(Player player) {
+    if (player == Player.X) {
+      return;
+    }
+    myPlayerType = Player.O;
+    playerType = Player.O;
+    cpuStartsGame();
+  }
   bool didIWin = false;
   @override
   bool onButtonClick(int id) {
@@ -33,6 +44,22 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
     super.resetGame();
 
     notifyListeners();
+
+    // print(whoStartedFirst);
+    // print(playerType);
+    whoStartedFirst = whoStartedFirst == Player.X ? Player.O : Player.X;
+    // playerType = whoStartedFirst == Player.X ? Player.X : Player.O;
+
+    print(whoStartedFirst);
+    print(playerType);
+
+    if (whoStartedFirst != myPlayerType) {
+      print("CPU starts ${playerType}");
+      cpuStartsGame();
+    } else {
+      myTurn = true;
+      notifyListeners();
+    }
   }
 
   void fillNextButton() {
@@ -53,9 +80,9 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
       showModelScreen = true;
       didIWin = false;
     } else {
-      togglePlayer();
       myTurn = true;
     }
+    togglePlayer();
 
     notifyListeners();
   }
@@ -72,5 +99,10 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
       }
     }
     return randomInt;
+  }
+
+  void cpuStartsGame() {
+    myTurn = false;
+    fillNextButton();
   }
 }

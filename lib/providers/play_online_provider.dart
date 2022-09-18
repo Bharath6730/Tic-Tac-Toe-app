@@ -1,119 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:tic_tac_toe/utilities/online_play_classes.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
 
 import './../models/logic_provider.dart';
-
-class Message {
-  final String data;
-
-  Message({required this.data});
-
-  factory Message.fromJson(Map<String, dynamic> json) {
-    return Message(data: json['data']);
-  }
-}
-
-// TODO :
-// File Formating and code refactoring
-// GetIT local storage ... save states while exit
-
-class WinnerMessage {
-  int? X;
-  int? Y;
-  String winner;
-  List<dynamic>? winnerWho;
-  Player? whoStarted;
-
-  WinnerMessage(
-      {required this.winner,
-      required this.winnerWho,
-      this.X,
-      this.Y,
-      this.whoStarted}) {
-    winnerWho ??= winnerWho?.map((e) => int.tryParse(e[1])).toList();
-  }
-
-  factory WinnerMessage.fromJson(Map<String, dynamic> json) {
-    return WinnerMessage(
-        winner: json["winner"],
-        winnerWho: json["who"],
-        X: int.tryParse(json["X"].toString()[1]),
-        Y: int.tryParse(json["Y"].toString()[1]),
-        whoStarted: (json["whoStarted"] == "X") ? Player.X : Player.O);
-  }
-}
-
-class ReJoin extends GameMessage {
-  int totalGames;
-  int myScore;
-  int draw;
-  bool myTurn;
-  Player player;
-  String oppName;
-
-  ReJoin(
-      {required super.room,
-      super.oList,
-      super.xList,
-      super.player1,
-      super.player2,
-      required this.totalGames,
-      required this.myTurn,
-      required this.player,
-      required this.oppName,
-      required this.draw,
-      required this.myScore});
-
-  factory ReJoin.fromJson(Map<String, dynamic> json) {
-    // print(json);
-    return ReJoin(
-        room: json["room"],
-        player2: json["player2"],
-        oList: json["oList"],
-        xList: json["xList"],
-        player1: json["player1"],
-        draw: json["draw"],
-        myScore: json["myScore"],
-        myTurn: json["myTurn"],
-        oppName: json["oppName"],
-        player: (json["Player"] == "X") ? Player.X : Player.O,
-        totalGames: json["TotalGames"]);
-  }
-}
-
-class GameMessage {
-  final String room;
-  List<dynamic>? oList;
-  List<dynamic>? xList;
-  String? player1;
-  String? player2;
-  int? X;
-  int? Y;
-
-  GameMessage(
-      {this.oList,
-      required this.room,
-      this.xList,
-      this.player1,
-      this.player2,
-      this.X,
-      this.Y}) {
-    oList ??= oList?.map((e) => int.tryParse(e[1])).toList() ?? [];
-    xList ??= xList?.map((e) => int.tryParse(e[1])).toList() ?? [];
-  }
-  factory GameMessage.fromJson(Map<String, dynamic> json) {
-    // print(json);
-    return GameMessage(
-        room: json["room"],
-        player2: json["player2"],
-        oList: json["oList"],
-        xList: json["xList"],
-        player1: json["player1"],
-        X: int.tryParse(json["X"].toString()[1]),
-        Y: int.tryParse(json["Y"].toString()[1]));
-  }
-}
 
 class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   io.Socket socket =
@@ -244,16 +134,16 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
         opponentName = rejoinMessage.player1 as String;
         room = rejoinMessage.room;
         playerType = Player.X;
-        rejoinMessage.xList!.forEach((element) {
+        for (var element in rejoinMessage.xList!) {
           element = int.parse(element);
           super.onButtonClick(element);
-        });
+        }
 
         playerType = Player.O;
-        rejoinMessage.oList!.forEach((element) {
+        for (var element in rejoinMessage.oList!) {
           element = int.parse(element);
           super.onButtonClick(element);
-        });
+        }
 
         if (rejoinMessage.player == Player.X) {
           xWinCount = rejoinMessage.myScore;
@@ -388,6 +278,8 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
 
     notifyListeners();
   }
+
+  // TODO  : wait for player next round.
 
   @override
   bool onButtonClick(int id) {

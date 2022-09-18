@@ -54,7 +54,7 @@ class ModelWidget extends StatelessWidget {
               ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   SvgPicture.asset(
                     getAssetLink(winner),
-                    height: 30,
+                    height: 28,
                   ),
                   const SizedBox(
                     width: 12,
@@ -62,7 +62,7 @@ class ModelWidget extends StatelessWidget {
                   Text(
                     "TAKES THE ROUND",
                     style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 22,
                         fontWeight: FontWeight.w700,
                         color: winColor),
                     textAlign: TextAlign.center,
