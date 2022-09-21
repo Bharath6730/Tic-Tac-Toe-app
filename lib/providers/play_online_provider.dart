@@ -6,8 +6,12 @@ import 'package:tic_tac_toe/utilities/utlility.dart';
 import './../models/logic_provider.dart';
 
 class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
-  io.Socket socket =
-      io.io("https://bharath6730.herokuapp.com/", <String, dynamic>{
+  // io.Socket socket =
+  //     io.io("https://bharath6730.herokuapp.com/", <String, dynamic>{
+  //   "transports": ["websocket"],
+  //   "autoConnect": false,
+  // });
+  io.Socket socket = io.io("http://172.20.139.185:3000/", <String, dynamic>{
     "transports": ["websocket"],
     "autoConnect": false,
   });
@@ -19,7 +23,7 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   String? room;
   bool connected = false;
   bool showGameScreen = false;
-  bool iAmPlayer1 = false;
+  bool iAmPlayer1 = true;
   Player myButtonType = Player.X;
   bool showRoomAnouncement = true;
   bool didIWIn = false;
@@ -28,15 +32,24 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   bool showPlayerLeftDialog = false;
   bool myTurnCopy = false;
   bool opponentLeft = false;
+  bool waitingForPlayer = false;
+  bool opponentWantsToPlayAgain = false;
+  bool modelScreenAlreadyShown = false;
 
   PlayOnlineProvider({required this.context}) {
     if (!connected) initializeSocket(context);
   }
 
   // Set iamPlayer1 to false if joining game
+  void change() {
+    opponentWantsToPlayAgain = false;
+    notifyListeners();
+  }
 
   void initializeSocket(context) {
-    socket.connect();
+    if (!socket.connected) {
+      socket.connect();
+    }
 
     // socket.onError((data) {
     // });
@@ -48,13 +61,6 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
     socket.onConnectError((data) {
       showSnackBar("There was error .Please try again later.");
     });
-
-    // socket.onPing((data) {
-    //   print(data);
-    // });
-    // socket.onPong((data) {
-    //   print(data);
-    // });
 
     socket.onConnect((data) {
       socket.on("messageFromServer", (msg) {
@@ -222,6 +228,7 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
       if (winners) {
         myTurn = false;
         showModelScreen = true;
+        // modelScreenAlreadyShown = true;
         playerType = myButtonType;
       }
       notifyListeners();
@@ -245,6 +252,23 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
       myTurn = false;
       opponentLeft = true;
 
+      notifyListeners();
+    });
+    socket.on("next-round", (_) {
+      if (waitingForPlayer) {
+        playerType = myButtonType;
+        if (didIStartFirst) {
+          myTurn = false;
+        } else {
+          myTurn = true;
+        }
+        waitingForPlayer = false;
+        showRoomAnouncement = false;
+        opponentWantsToPlayAgain = false;
+      } else {
+        opponentWantsToPlayAgain = true;
+        // showSnackBar("$opponentName wants to play again.");
+      }
       notifyListeners();
     });
 
@@ -279,14 +303,36 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO  : wait for player next round.
+  void changeModelToTrue() {
+    modelScreenAlreadyShown = true;
+  }
+
+  void changeModelToFalse() {
+    modelScreenAlreadyShown = false;
+  }
+
+  void returnFunction() {
+    Navigator.of(context).pop();
+    changeModelToFalse();
+  }
+
+  void exitPage() {
+    if (showGameScreen) {
+      showGameScreen = false;
+      notifyListeners();
+      return;
+    }
+    disconnectSocket();
+    Navigator.of(context).pop();
+  }
 
   @override
   bool onButtonClick(int id) {
     bool isChanged = false;
     if (!myTurn) return isChanged;
-
     isChanged = super.onButtonClick(id);
+
+    if (!isChanged) return isChanged;
 
     String myButton = (myButtonType == Player.X) ? "X" : "Y";
     List<String> xList = xButtons.map((e) => "0${e.toString()}").toList();
@@ -302,12 +348,22 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   @override
   void resetGame() {
     super.resetGame();
-    playerType = myButtonType;
-    if (didIStartFirst) {
+    if (!opponentWantsToPlayAgain) {
       myTurn = false;
+      showRoomAnouncement = true;
+      waitingForPlayer = true;
     } else {
-      myTurn = true;
+      // showModelScreen = false;
+      opponentWantsToPlayAgain = false;
+      playerType = myButtonType;
+      if (didIStartFirst) {
+        myTurn = false;
+      } else {
+        myTurn = true;
+      }
     }
+    socket.emit("next-round", {"room": room});
+    changeModelToFalse();
 
     notifyListeners();
   }

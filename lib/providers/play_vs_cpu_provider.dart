@@ -45,16 +45,9 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
 
     notifyListeners();
 
-    // print(whoStartedFirst);
-    // print(playerType);
     whoStartedFirst = whoStartedFirst == Player.X ? Player.O : Player.X;
-    // playerType = whoStartedFirst == Player.X ? Player.X : Player.O;
-
-    print(whoStartedFirst);
-    print(playerType);
 
     if (whoStartedFirst != myPlayerType) {
-      print("CPU starts ${playerType}");
       cpuStartsGame();
     } else {
       myTurn = true;

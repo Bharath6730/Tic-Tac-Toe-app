@@ -113,7 +113,7 @@ class FooterButtonLabel extends StatelessWidget {
             : " O";
     return Column(children: [
       if (type != ButtonType.none)
-        (onlyName)
+        (!onlyName)
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

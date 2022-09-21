@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import '../utilities/utlility.dart';
 import 'buttons/submit_button.dart';
 
 class ModelWidget extends StatelessWidget {
   final VoidCallback resetGame;
+  final VoidCallback returnFunction;
   final ButtonType winner;
   final String winnerText;
 
-  const ModelWidget(
-      {Key? key,
-      required this.resetGame,
-      required this.winner,
-      required this.winnerText})
-      : super(
+  const ModelWidget({
+    Key? key,
+    required this.resetGame,
+    required this.returnFunction,
+    required this.winner,
+    required this.winnerText,
+  }) : super(
           key: key,
         );
 
@@ -106,12 +107,7 @@ class ModelWidget extends StatelessWidget {
                 shadowColor: AppTheme.silverShadowColor,
                 splashColor: AppTheme.silverHoverColor,
                 radius: 15,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  if (Navigator.canPop(context)) {
-                    Navigator.of(context).pop();
-                  }
-                },
+                onPressed: returnFunction,
                 child: Text(
                   "QUIT",
                   style: Theme.of(context)
@@ -121,27 +117,44 @@ class ModelWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-              SubmitButton(
-                backgroundColor: AppTheme.oButtonColor,
-                shadowColor: AppTheme.oShadowColor,
-                splashColor: AppTheme.oHoverColor,
-                radius: 15,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  resetGame();
-                },
-                child: Text(
-                  "NEXT ROUND",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
+              NextRoundButton(
+                resetGame: resetGame,
+                key: key,
               ),
             ],
           )
         ]),
+      ),
+    );
+  }
+}
+
+class NextRoundButton extends StatelessWidget {
+  const NextRoundButton({
+    Key? key,
+    required this.resetGame,
+  }) : super(key: key);
+
+  final VoidCallback resetGame;
+
+  @override
+  Widget build(BuildContext context) {
+    return SubmitButton(
+      backgroundColor: AppTheme.oButtonColor,
+      shadowColor: AppTheme.oShadowColor,
+      splashColor: AppTheme.oHoverColor,
+      radius: 15,
+      onPressed: () {
+        Navigator.of(context).pop();
+        resetGame();
+      },
+      child: Text(
+        "NEXT ROUND",
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(color: Colors.black),
+        textAlign: TextAlign.center,
       ),
     );
   }

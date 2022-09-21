@@ -32,27 +32,35 @@ class PlayVsCPUScreen extends StatelessWidget {
                     resetGame: value.resetGame,
                     winner: value.winner,
                     winnerText: value.didIWin ? "You Won!" : "CPU Wins!",
+                    returnFunction: () {
+                      Navigator.of(context).pop();
+                      if (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop();
+                      }
+                    },
                   ),
                 );
               });
             }
-            return Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 80),
-                  GameHeader(
-                    currentPlayer: (value.myTurn) ? "Your" : "CPU's",
-                  ),
-                  GameGrid(xoList: value),
-                  const SizedBox(height: 20),
-                  GameFooter(
-                    xWinCount: value.xWinCount,
-                    oWinCount: value.oWinCount,
-                    tiesCount: value.tiesCount,
-                    xCustomName: selectedPlayer == Player.X ? "You" : "CPU",
-                    oCustomName: selectedPlayer == Player.X ? "CPU" : "You",
-                  ),
-                ]);
+            return SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 80),
+                    GameHeader(
+                      currentPlayer: (value.myTurn) ? "Your" : "CPU's",
+                    ),
+                    GameGrid(xoList: value),
+                    const SizedBox(height: 20),
+                    GameFooter(
+                      xWinCount: value.xWinCount,
+                      oWinCount: value.oWinCount,
+                      tiesCount: value.tiesCount,
+                      xCustomName: selectedPlayer == Player.X ? "You" : "CPU",
+                      oCustomName: selectedPlayer == Player.X ? "CPU" : "You",
+                    ),
+                  ]),
+            );
           },
         ),
       ),

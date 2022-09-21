@@ -63,6 +63,8 @@ flutter:
         - assets/images/x_filled.svg
         - assets/images/o_filled.svg
         - assets/images/xo_title.svg
+        - assets/images/triangle_svg.svg
+        - assets/images/triangle2.svg
         # - images/a_dot_ham.jpeg
 
     # An image asset can refer to one or more resolution-specific "variants", see

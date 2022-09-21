@@ -5,9 +5,6 @@ import 'package:tic_tac_toe/screens/home_screen.dart';
 import 'package:tic_tac_toe/screens/play_online_screen.dart';
 import 'package:tic_tac_toe/screens/play_vs_cpu_screen.dart';
 
-// import './screens/game_screen.dart';
-// import './screens/home_screen.dart';
-
 void main() {
   runApp(const MyApp());
 }
@@ -19,7 +16,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      // theme: ThemeData.dark().copyWith(fontFamily : ,
       theme: ThemeData(
           fontFamily: "Outfit",
           appBarTheme: const AppBarTheme(

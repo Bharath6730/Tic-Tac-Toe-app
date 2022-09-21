@@ -31,8 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const Drawer(),
       appBar: AppBar(
-        leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+        // leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
         actions: [
           Padding(
             padding: const EdgeInsets.all(10),
@@ -44,8 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 image: DecorationImage(
                   fit: BoxFit.cover,
                   image: NetworkImage(
-                    "https://www.clipartkey.com/mpngs/m/152-1520367_user-profile-default-image-png-clipart-png-download.png",
-                  ),
+                      "https://res.cloudinary.com/dciwowqk7/image/upload/v1660972618/user/default-profile-pic.jpg"),
                 ),
               ),
             ),

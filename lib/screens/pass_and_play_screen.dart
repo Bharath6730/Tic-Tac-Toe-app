@@ -33,6 +33,12 @@ class PassAndPlayScreen extends StatelessWidget {
                     context: context,
                     builder: (context) => ModelWidget(
                           resetGame: value.resetGame,
+                          returnFunction: () {
+                            Navigator.of(context).pop();
+                            if (Navigator.of(context).canPop()) {
+                              Navigator.of(context).pop();
+                            }
+                          },
                           winner: value.winner,
                           winnerText: "You Won!",
                         ));
@@ -40,19 +46,21 @@ class PassAndPlayScreen extends StatelessWidget {
             }
             String currentPlayerString =
                 (value.playerType == Player.X) ? "X" : "O";
-            return Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 80),
-                  GameHeader(currentPlayer: currentPlayerString),
-                  GameGrid(xoList: value),
-                  const SizedBox(height: 20),
-                  GameFooter(
-                    oWinCount: value.oWinCount,
-                    xWinCount: value.xWinCount,
-                    tiesCount: value.tiesCount,
-                  ),
-                ]);
+            return SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 80),
+                    GameHeader(currentPlayer: currentPlayerString),
+                    GameGrid(xoList: value),
+                    const SizedBox(height: 20),
+                    GameFooter(
+                      oWinCount: value.oWinCount,
+                      xWinCount: value.xWinCount,
+                      tiesCount: value.tiesCount,
+                    ),
+                  ]),
+            );
           },
         ),
       ),
