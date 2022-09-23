@@ -244,8 +244,6 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
     });
 
     socket.on("playerLeft", (_) {
-      // print(data);
-      // showRoomAnouncement = true;
       showModelScreen = false;
       showPlayerLeftDialog = true;
       myTurnCopy = myTurn;
@@ -267,7 +265,6 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
         opponentWantsToPlayAgain = false;
       } else {
         opponentWantsToPlayAgain = true;
-        // showSnackBar("$opponentName wants to play again.");
       }
       notifyListeners();
     });
@@ -330,6 +327,7 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   bool onButtonClick(int id) {
     bool isChanged = false;
     if (!myTurn) return isChanged;
+    playerType = myButtonType;
     isChanged = super.onButtonClick(id);
 
     if (!isChanged) return isChanged;

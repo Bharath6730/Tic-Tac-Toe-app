@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/providers/pass_and_play_provider.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
-import 'package:tic_tac_toe/widgets/model_widget.dart';
+import 'package:tic_tac_toe/widgets/dialogs/model_widget.dart';
 
 import '../widgets/main_widgets/center_app_icon.dart';
 import '../widgets/main_widgets/game_header.dart';

@@ -6,7 +6,7 @@ import 'package:tic_tac_toe/widgets/main_widgets/center_app_icon.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/game_footer.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/game_grid.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/game_header.dart';
-import 'package:tic_tac_toe/widgets/model_widget.dart';
+import 'package:tic_tac_toe/widgets/dialogs/model_widget.dart';
 
 class PlayVsCPUScreen extends StatelessWidget {
   const PlayVsCPUScreen({Key? key}) : super(key: key);

@@ -6,15 +6,17 @@ import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/providers/play_online_provider.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
 import 'package:tic_tac_toe/widgets/buttons/submit_button.dart';
+import 'package:tic_tac_toe/widgets/dialogs/dialog_container.dart';
+import 'package:tic_tac_toe/widgets/dialogs/model_widget.dart';
 
-class OnlinePlayModalWidget extends StatefulWidget {
+class OnlinePlayWinnerDialog extends StatefulWidget {
   final VoidCallback resetGame;
   final VoidCallback returnFunction;
   final ButtonType winner;
   final String winnerText;
   final PlayOnlineProvider provider;
 
-  const OnlinePlayModalWidget(
+  const OnlinePlayWinnerDialog(
       {Key? key,
       required this.resetGame,
       required this.returnFunction,
@@ -26,10 +28,10 @@ class OnlinePlayModalWidget extends StatefulWidget {
         );
 
   @override
-  State<OnlinePlayModalWidget> createState() => _OnlinePlayModalWidgetState();
+  State<OnlinePlayWinnerDialog> createState() => _OnlinePlayModalWidgetState();
 }
 
-class _OnlinePlayModalWidgetState extends State<OnlinePlayModalWidget>
+class _OnlinePlayModalWidgetState extends State<OnlinePlayWinnerDialog>
     with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacity;
@@ -135,117 +137,55 @@ class _OnlinePlayModalWidgetState extends State<OnlinePlayModalWidget>
       winColor = Colors.red;
     }
 
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.all(20),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Container(
-        width: double.infinity,
-        height: 250,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Theme.of(context).appBarTheme.backgroundColor),
-        padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
-        child: Column(children: [
-          Text((!itsADraw) ? widget.winnerText : "ITS A TIE!",
-              style: const TextStyle(fontSize: 20, color: Colors.white),
-              textAlign: TextAlign.center),
-          const SizedBox(
-            height: 25,
+    return DialogContainer(
+      header: Text((!itsADraw) ? widget.winnerText : "ITS A TIE!",
+          style: const TextStyle(fontSize: 20, color: Colors.white),
+          textAlign: TextAlign.center),
+      body: showWinnerText(
+          itsADraw: itsADraw, winColor: winColor, winner: widget.winner),
+      footer: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          SubmitButton(
+            backgroundColor: AppTheme.silverButtonColor,
+            shadowColor: AppTheme.silverShadowColor,
+            splashColor: AppTheme.silverHoverColor,
+            radius: 15,
+            onPressed: () {
+              hideOverlay();
+              widget.returnFunction();
+            },
+            child: Text(
+              "QUIT",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(color: Colors.black),
+              textAlign: TextAlign.center,
+            ),
           ),
-          (!itsADraw)
-              ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  SvgPicture.asset(
-                    getAssetLink(widget.winner),
-                    height: 28,
-                  ),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  Text(
-                    "TAKES THE ROUND",
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: winColor),
-                    textAlign: TextAlign.center,
-                  ),
-                ])
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      getAssetLink(ButtonType.O),
-                      height: 30,
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    Text(
-                      "-",
-                      style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: winColor),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    SvgPicture.asset(
-                      getAssetLink(ButtonType.X),
-                      height: 30,
-                    ),
-                  ],
-                ),
-          const SizedBox(
-            height: 35,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              SubmitButton(
-                backgroundColor: AppTheme.silverButtonColor,
-                shadowColor: AppTheme.silverShadowColor,
-                splashColor: AppTheme.silverHoverColor,
-                radius: 15,
-                onPressed: () {
-                  hideOverlay();
-                  widget.returnFunction();
-                },
-                child: Text(
-                  "QUIT",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              ChangeNotifierProvider<PlayOnlineProvider>.value(
-                  value: widget.provider,
-                  child: Consumer<PlayOnlineProvider>(builder: (_, value, __) {
+          ChangeNotifierProvider<PlayOnlineProvider>.value(
+              value: widget.provider,
+              child: Consumer<PlayOnlineProvider>(builder: (_, value, __) {
+                if (value.opponentWantsToPlayAgain) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
+                    showOverlay(context, key, value.opponentName);
+                  });
+                }
+                return NextRoundButton(
+                  resetGame: () {
                     if (value.opponentWantsToPlayAgain) {
-                      WidgetsBinding.instance.addPostFrameCallback((_) async {
-                        showOverlay(context, key, value.opponentName);
-                      });
+                      hideOverlay();
+                      value.returnFunction();
+                    } else {
+                      Navigator.of(context).pop();
                     }
-                    return NextRoundButton(
-                      resetGame: () {
-                        if (value.opponentWantsToPlayAgain) {
-                          hideOverlay();
-                          value.returnFunction();
-                        } else {
-                          Navigator.of(context).pop();
-                        }
-                        value.resetGame();
-                      },
-                      key: key,
-                    );
-                  }))
-            ],
-          )
-        ]),
+                    value.resetGame();
+                  },
+                  key: key,
+                );
+              }))
+        ],
       ),
     );
   }

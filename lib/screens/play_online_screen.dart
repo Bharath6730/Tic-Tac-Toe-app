@@ -6,7 +6,7 @@ import 'package:tic_tac_toe/widgets/playOnline/black_center_button.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/center_app_icon.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/game_footer.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/game_grid.dart';
-import 'package:tic_tac_toe/widgets/playOnline/modal_widget.dart';
+import 'package:tic_tac_toe/widgets/playOnline/winner_dialog.dart';
 import 'package:tic_tac_toe/widgets/playOnline/player_left_dialog.dart';
 import 'package:tic_tac_toe/widgets/playOnline/welcome_widget.dart';
 
@@ -28,7 +28,7 @@ class _PlayOnlineScreenState extends State<PlayOnlineScreen> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             showDialog(
               context: context,
-              builder: (context) => OnlinePlayModalWidget(
+              builder: (context) => OnlinePlayWinnerDialog(
                 resetGame: value.resetGame,
                 returnFunction: value.returnFunction,
                 winner: value.winner,

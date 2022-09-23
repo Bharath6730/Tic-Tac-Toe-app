@@ -58,9 +58,9 @@ class OnlinePlayWelcomeWidget extends StatelessWidget {
                   ?.copyWith(color: Colors.white),
             ),
             SubmitButton(
-              shadowColor: AppTheme.silverShadowColor,
-              backgroundColor: AppTheme.silverButtonColor,
-              splashColor: AppTheme.silverHoverColor,
+              shadowColor: AppTheme.xShadowColor,
+              backgroundColor: AppTheme.xbuttonColor,
+              splashColor: AppTheme.xHoverColor,
               onPressed: provider.createGame,
               radius: 15,
               child: Text("Get Room Code",
@@ -70,7 +70,7 @@ class OnlinePlayWelcomeWidget extends StatelessWidget {
         ),
       ),
       CenterContainer(
-        height: 350,
+        height: 325,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -99,21 +99,21 @@ class OnlinePlayWelcomeWidget extends StatelessWidget {
                 decoration: const InputDecoration(
                     contentPadding: EdgeInsets.all(0.0),
                     hintText: "Enter room code",
+                    hintStyle: TextStyle(color: Colors.white),
                     focusedBorder: OutlineInputBorder(
                         borderSide:
                             BorderSide(color: AppTheme.silverButtonColor)),
                     focusColor: AppTheme.oButtonColor,
-                    border: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: AppTheme.silverButtonColor))),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white))),
                 textInputAction: TextInputAction.done,
                 onSubmitted: (roomName) => provider.joinGame(roomName),
               ),
             ),
             SubmitButton(
-              shadowColor: AppTheme.silverShadowColor,
-              backgroundColor: AppTheme.silverButtonColor,
-              splashColor: AppTheme.silverHoverColor,
+              shadowColor: AppTheme.oShadowColor,
+              backgroundColor: AppTheme.oButtonColor,
+              splashColor: AppTheme.oHoverColor,
               onPressed: () {
                 if (roomTextController.text.isNotEmpty) {
                   provider.joinGame(roomTextController.text);
