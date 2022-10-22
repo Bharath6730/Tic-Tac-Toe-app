@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:tic_tac_toe/providers/play_online_provider.dart';
+import 'package:tic_tac_toe/utilities/dialog_animater.dart';
+import 'package:tic_tac_toe/utilities/utlility.dart';
 import 'package:tic_tac_toe/widgets/playOnline/black_center_button.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/center_app_icon.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/game_footer.dart';
@@ -10,28 +12,24 @@ import 'package:tic_tac_toe/widgets/playOnline/winner_dialog.dart';
 import 'package:tic_tac_toe/widgets/playOnline/player_left_dialog.dart';
 import 'package:tic_tac_toe/widgets/playOnline/welcome_widget.dart';
 
-class PlayOnlineScreen extends StatefulWidget {
+class PlayOnlineScreen extends StatelessWidget {
   const PlayOnlineScreen({Key? key}) : super(key: key);
 
   @override
-  State<PlayOnlineScreen> createState() => _PlayOnlineScreenState();
-}
-
-class _PlayOnlineScreenState extends State<PlayOnlineScreen> {
-  @override
   Widget build(BuildContext context) {
     final TextEditingController roomTextController = TextEditingController();
+
     return ChangeNotifierProvider(
       create: (context) => PlayOnlineProvider(context: context),
       child: Consumer<PlayOnlineProvider>(builder: (_, value, __) {
-        if (value.showModelScreen && !value.modelScreenAlreadyShown) {
+        if (value.showWinnerDialog && !value.modelScreenAlreadyShown) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            showDialog(
+            showAnimatedDialog(
               context: context,
-              builder: (context) => OnlinePlayWinnerDialog(
+              dialog: OnlinePlayWinnerDialog(
                 resetGame: value.resetGame,
                 returnFunction: value.returnFunction,
-                winner: value.winner,
+                winner: value.winner as ButtonType,
                 winnerText:
                     value.didIWIn ? "You Won!" : "${value.opponentName} Wins!",
                 provider: value,
@@ -42,11 +40,11 @@ class _PlayOnlineScreenState extends State<PlayOnlineScreen> {
         }
         if (value.showPlayerLeftDialog) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            showDialog(
+            showAnimatedDialog(
                 context: context,
-                builder: (context) => PlayerLeftDialog(
-                      waitForPlayer: value.waitForPlayer,
-                    ));
+                dialog: PlayerLeftDialog(
+                  waitForPlayer: value.waitForPlayer,
+                ));
           });
         }
         String announcementText = "";

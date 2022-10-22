@@ -14,11 +14,18 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
     }
     myPlayerType = Player.O;
     playerType = Player.O;
+    whoStartedFirst = Player.O;
     cpuStartsGame();
   }
   bool didIWin = false;
   @override
   bool onButtonClick(int id) {
+    if (winner != null) {
+      showWinnerDialog = true;
+      notifyListeners();
+      return false;
+    }
+
     if (!myTurn) return false;
 
     bool isChanged = super.onButtonClick(id);
@@ -29,7 +36,7 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
     checkWinner = super.checkWinner();
 
     if (checkWinner) {
-      showModelScreen = true;
+      showWinnerDialog = true;
       didIWin = true;
     }
     notifyListeners();
@@ -37,6 +44,18 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
     if (!checkWinner) fillNextButton();
 
     return isChanged;
+  }
+
+  @override
+  void completeReset() {
+    super.completeReset();
+    super.resetGame();
+
+    notifyListeners();
+
+    if (myPlayerType != whoStartedFirst) {
+      cpuStartsGame();
+    }
   }
 
   @override
@@ -70,7 +89,7 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
     }
     if (winner) {
       myTurn = false;
-      showModelScreen = true;
+      showWinnerDialog = true;
       didIWin = false;
     } else {
       myTurn = true;

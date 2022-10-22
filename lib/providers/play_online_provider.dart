@@ -11,7 +11,7 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   //   "transports": ["websocket"],
   //   "autoConnect": false,
   // });
-  io.Socket socket = io.io("http://172.20.139.185:3000/", <String, dynamic>{
+  io.Socket socket = io.io("http://192.168.1.174:3000/", <String, dynamic>{
     "transports": ["websocket"],
     "autoConnect": false,
   });
@@ -227,7 +227,7 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
 
       if (winners) {
         myTurn = false;
-        showModelScreen = true;
+        showWinnerDialog = true;
         // modelScreenAlreadyShown = true;
         playerType = myButtonType;
       }
@@ -244,7 +244,7 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
     });
 
     socket.on("playerLeft", (_) {
-      showModelScreen = false;
+      showWinnerDialog = false;
       showPlayerLeftDialog = true;
       myTurnCopy = myTurn;
       myTurn = false;
@@ -315,7 +315,7 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
 
   void exitPage() {
     if (showGameScreen) {
-      showGameScreen = false;
+      // showGameScreen = false;
       notifyListeners();
       return;
     }
@@ -325,6 +325,12 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
 
   @override
   bool onButtonClick(int id) {
+    if (winner != null) {
+      showWinnerDialog = true;
+      notifyListeners();
+      return false;
+    }
+
     bool isChanged = false;
     if (!myTurn) return isChanged;
     playerType = myButtonType;
@@ -351,7 +357,7 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
       showRoomAnouncement = true;
       waitingForPlayer = true;
     } else {
-      // showModelScreen = false;
+      // showWinnerDialog = false;
       opponentWantsToPlayAgain = false;
       playerType = myButtonType;
       if (didIStartFirst) {

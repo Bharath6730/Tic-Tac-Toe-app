@@ -6,8 +6,12 @@ import 'package:tic_tac_toe/widgets/buttons/submit_button.dart';
 class GameHeader extends StatelessWidget {
   final String currentPlayer;
   final bool refreshRequired;
+  final VoidCallback? onRefreshClick;
   const GameHeader(
-      {Key? key, required this.currentPlayer, this.refreshRequired = true})
+      {Key? key,
+      required this.currentPlayer,
+      this.onRefreshClick,
+      this.refreshRequired = true})
       : super(key: key);
 
   @override
@@ -20,30 +24,48 @@ class GameHeader extends StatelessWidget {
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.25,
           ),
-          CenterButton(
-            contentText: "$currentPlayer TURN",
-            color: AppTheme.silverButtonColor,
-            shadowColor: AppTheme.darkShadow,
-            backgroundColor: AppTheme.dialogColor,
-            splashColor: AppTheme.darkShadow,
-            onPressed: () {},
-            radius: 10,
-          ),
+          CenterHeader(currentPlayer: currentPlayer),
           const SizedBox(
             width: 10,
           ),
-          SubmitButton(
-            shadowColor: AppTheme.darkShadow,
-            backgroundColor: AppTheme.dialogColor,
-            splashColor: AppTheme.darkShadow,
-            onPressed: () {},
-            radius: 10,
-            child: const Center(
-              child: Icon(Icons.refresh_rounded),
-            ),
-          ),
+          refreshRequired
+              ? SubmitButton(
+                  shadowColor: AppTheme.darkShadow,
+                  backgroundColor: AppTheme.dialogColor,
+                  splashColor: AppTheme.darkShadow,
+                  onPressed: onRefreshClick != null
+                      ? onRefreshClick as VoidCallback
+                      : () {},
+                  radius: 10,
+                  child: const Center(
+                    child: Icon(Icons.refresh_rounded, color: Colors.white),
+                  ),
+                )
+              : const SizedBox(),
         ],
       ),
+    );
+  }
+}
+
+class CenterHeader extends StatelessWidget {
+  const CenterHeader({
+    Key? key,
+    required this.currentPlayer,
+  }) : super(key: key);
+
+  final String currentPlayer;
+
+  @override
+  Widget build(BuildContext context) {
+    return CenterButton(
+      contentText: "$currentPlayer TURN",
+      color: AppTheme.silverButtonColor,
+      shadowColor: AppTheme.darkShadow,
+      backgroundColor: AppTheme.dialogColor,
+      splashColor: AppTheme.darkShadow,
+      onPressed: () {},
+      radius: 10,
     );
   }
 }

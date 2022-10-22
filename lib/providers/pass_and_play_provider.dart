@@ -5,8 +5,15 @@ class PassAndPlayProvider extends LogicProvider with ChangeNotifier {
   PassAndPlayProvider({required playerType}) {
     this.playerType = playerType;
   }
+
   @override
   bool onButtonClick(int id) {
+    if (winner != null) {
+      showWinnerDialog = true;
+      notifyListeners();
+      return false;
+    }
+
     if (myTurn == false) return false;
 
     bool isChanged = super.onButtonClick(id);
@@ -24,6 +31,14 @@ class PassAndPlayProvider extends LogicProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  @override
+  void completeReset() {
+    super.completeReset();
+    super.resetGame();
+
+    notifyListeners();
+  }
+
   void passAndPlayButtonClick(bool isChanged) {
     bool winner = false;
 
@@ -31,7 +46,7 @@ class PassAndPlayProvider extends LogicProvider with ChangeNotifier {
 
     if (winner) {
       myTurn = false;
-      showModelScreen = true;
+      showWinnerDialog = true;
     } else {
       if (isChanged) {
         togglePlayer();

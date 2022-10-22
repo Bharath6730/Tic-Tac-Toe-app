@@ -3,13 +3,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tic_tac_toe/widgets/dialogs/custom_dialog.dart';
 import '../../utilities/utlility.dart';
 
-class ModelWidget extends StatelessWidget {
+class WinnerDialog extends StatelessWidget {
   final VoidCallback resetGame;
   final VoidCallback returnFunction;
   final ButtonType winner;
   final String winnerText;
 
-  const ModelWidget({
+  const WinnerDialog({
     Key? key,
     required this.resetGame,
     required this.returnFunction,

@@ -2,11 +2,11 @@ import '../utilities/utlility.dart';
 import 'xo_button_class.dart';
 
 class LogicProvider {
-  ButtonType winner = ButtonType.X;
+  ButtonType? winner;
 
   Player playerType = Player.X;
   bool myTurn = true;
-  bool showModelScreen = false;
+  bool showWinnerDialog = false;
 
   List<int> xButtons = [];
   List<int> oButtons = [];
@@ -43,7 +43,6 @@ class LogicProvider {
     bool isChanged = false;
     XOButtonProvider button = _data.firstWhere((element) => element.id == id);
 
-    // if (myTurn == false) return isChanged;
     if (button.buttontype != ButtonType.none) return isChanged;
 
     if (playerType == Player.X) {
@@ -103,7 +102,7 @@ class LogicProvider {
     } else {
       if (xButtons.length + oButtons.length == 9) {
         winner = ButtonType.none;
-        showModelScreen = true;
+        showWinnerDialog = true;
         tiesCount = tiesCount + 1;
         return ans;
       }
@@ -123,10 +122,17 @@ class LogicProvider {
     });
 
     myTurn = true;
-    showModelScreen = false;
+    showWinnerDialog = false;
+    winner = null;
 
     xButtons = [];
     oButtons = [];
+  }
+
+  void completeReset() {
+    xWinCount = 0;
+    tiesCount = 0;
+    oWinCount = 0;
   }
 
   void togglePlayer() {
