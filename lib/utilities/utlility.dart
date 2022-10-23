@@ -6,6 +6,19 @@ enum ButtonType { X, O, none }
 
 enum Player { X, O }
 
+enum GameState {
+  idle,
+  creating,
+  joining,
+  playing,
+  waitingForPlayerToJoin,
+  opponentLeft,
+  waitingForPlayerToJoinAgain,
+  waitingForNextRoundAcceptance,
+  opponentQuit
+}
+
+
 String getAssetLink(ButtonType buttonType) {
   if (buttonType == ButtonType.none) return "";
   if (buttonType == ButtonType.X) return "assets/images/x_filled.svg";

@@ -22,13 +22,16 @@ class GameFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    final double maxBoxWidth = ((size.width - 40) / 3);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
-        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             child: CenterButton(
+                constraints: BoxConstraints(maxWidth: maxBoxWidth),
                 contentText: "",
                 color: Colors.black,
                 shadowColor: AppTheme.xShadowColor,
@@ -36,7 +39,7 @@ class GameFooter extends StatelessWidget {
                 splashColor: AppTheme.xShadowColor,
                 onPressed: () {},
                 radius: 15,
-                pad: const [10, 15],
+                pad: const [10, 5],
                 child: FooterButtonLabel(
                   type: ButtonType.X,
                   score: xWinCount,
@@ -45,10 +48,11 @@ class GameFooter extends StatelessWidget {
                 )),
           ),
           const SizedBox(
-            width: 10,
+            width: 8,
           ),
           Expanded(
             child: CenterButton(
+                constraints: BoxConstraints(maxWidth: maxBoxWidth),
                 color: Colors.black,
                 shadowColor: AppTheme.silverShadowColor,
                 backgroundColor: AppTheme.silverButtonColor,
@@ -63,17 +67,18 @@ class GameFooter extends StatelessWidget {
                 )),
           ),
           const SizedBox(
-            width: 10,
+            width: 8,
           ),
           Expanded(
             child: CenterButton(
+                constraints: BoxConstraints(maxWidth: maxBoxWidth),
                 color: Colors.black,
                 shadowColor: AppTheme.oShadowColor,
                 backgroundColor: AppTheme.oButtonColor,
                 splashColor: AppTheme.oShadowColor,
                 onPressed: () {},
                 radius: 15,
-                pad: const [10, 15],
+                pad: const [10, 5],
                 child: FooterButtonLabel(
                   type: ButtonType.O,
                   score: oWinCount,
@@ -117,17 +122,25 @@ class FooterButtonLabel extends StatelessWidget {
             ? Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    name,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    overflow: TextOverflow.ellipsis,
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: Text(
+                      name,
+                      style: Theme.of(context).textTheme.bodySmall,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                    ),
                   ),
-                  Text(
-                    overflow: TextOverflow.clip,
-                    playerType,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: Text(
+                      softWrap: false,
+                      overflow: TextOverflow.clip,
+                      playerType,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w900,
+                          ),
+                    ),
                   ),
                 ],
               )

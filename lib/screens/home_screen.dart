@@ -52,81 +52,83 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: Center(
-        child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(
-                height: 50,
-              ),
-              const XOIcon(height: 35),
-              const SizedBox(
-                height: 30,
-              ),
-              PlayerSelectionWidget(
-                onTap: _onTap,
-                player: _selectedPlayer,
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              SubmitButton(
-                size: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width * 0.70),
-                shadowColor: AppTheme.oShadowColor,
-                backgroundColor: AppTheme.oButtonColor,
-                splashColor: AppTheme.oHoverColor,
-                radius: 15,
-                onPressed: () {
-                  Navigator.pushNamed(context, "/passAndPlay",
-                      arguments: _selectedPlayer);
-                },
-                child: Text(
-                  "Pass and Play",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  textAlign: TextAlign.center,
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  height: 50,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SubmitButton(
-                size: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width * 0.70),
-                shadowColor: AppTheme.oShadowColor,
-                backgroundColor: AppTheme.oButtonColor,
-                splashColor: AppTheme.oHoverColor,
-                radius: 15,
-                onPressed: () {
-                  Navigator.pushNamed(context, "/playVsCPU",
-                      arguments: _selectedPlayer);
-                },
-                child: Text(
-                  "Play Vs Computer",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  textAlign: TextAlign.center,
+                const XOIcon(height: 35),
+                const SizedBox(
+                  height: 30,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SubmitButton(
-                size: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width * 0.70),
-                shadowColor: AppTheme.xShadowColor,
-                backgroundColor: AppTheme.xbuttonColor,
-                splashColor: AppTheme.xHoverColor,
-                radius: 15,
-                onPressed: () {
-                  Navigator.pushNamed(context, "/playOnline");
-                },
-                child: Text(
-                  "Play Online",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  textAlign: TextAlign.center,
+                PlayerSelectionWidget(
+                  onTap: _onTap,
+                  player: _selectedPlayer,
                 ),
-              )
-            ]),
+                const SizedBox(
+                  height: 40,
+                ),
+                SubmitButton(
+                  size: BoxConstraints(
+                      minWidth: MediaQuery.of(context).size.width * 0.70),
+                  shadowColor: AppTheme.oShadowColor,
+                  backgroundColor: AppTheme.oButtonColor,
+                  splashColor: AppTheme.oHoverColor,
+                  radius: 15,
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/passAndPlay",
+                        arguments: _selectedPlayer);
+                  },
+                  child: Text(
+                    "Pass and Play",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SubmitButton(
+                  size: BoxConstraints(
+                      minWidth: MediaQuery.of(context).size.width * 0.70),
+                  shadowColor: AppTheme.oShadowColor,
+                  backgroundColor: AppTheme.oButtonColor,
+                  splashColor: AppTheme.oHoverColor,
+                  radius: 15,
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/playVsCPU",
+                        arguments: _selectedPlayer);
+                  },
+                  child: Text(
+                    "Play Vs Computer",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SubmitButton(
+                  size: BoxConstraints(
+                      minWidth: MediaQuery.of(context).size.width * 0.70),
+                  shadowColor: AppTheme.xShadowColor,
+                  backgroundColor: AppTheme.xbuttonColor,
+                  splashColor: AppTheme.xHoverColor,
+                  radius: 15,
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/playOnline");
+                  },
+                  child: Text(
+                    "Play Online",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              ]),
+        ),
       ),
     );
   }

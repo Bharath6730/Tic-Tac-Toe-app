@@ -9,6 +9,7 @@ class PopWithDialog extends StatelessWidget {
   final String? quitTitle;
   final VoidCallback? cancelFunction;
   final VoidCallback? quitFunction;
+  final Function? runOnDismise;
   final Widget child;
 
   const PopWithDialog({
@@ -18,6 +19,7 @@ class PopWithDialog extends StatelessWidget {
     this.quitTitle,
     this.cancelFunction,
     this.quitFunction,
+    this.runOnDismise,
     required this.child,
     Key? key,
   }) : super(key: key);
@@ -57,6 +59,9 @@ class PopWithDialog extends StatelessWidget {
                           Navigator.of(context).pop("true");
                           Navigator.of(context).pop();
                         }));
+          if (runOnDismise != null) {
+            runOnDismise!(value);
+          }
           return value;
         },
         child: child);

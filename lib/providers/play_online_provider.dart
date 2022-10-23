@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 import 'package:tic_tac_toe/utilities/online_play_classes.dart';
+import 'package:tic_tac_toe/utilities/show_snackbar.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
 
 import './../models/logic_provider.dart';
@@ -19,57 +20,46 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   BuildContext context;
   final String myName = "Bharath";
   String opponentName = "Opponent";
+  GameState _gameState = GameState.idle;
 
   String? room;
   bool connected = false;
-  bool showGameScreen = false;
   bool iAmPlayer1 = true;
   Player myButtonType = Player.X;
-  bool showRoomAnouncement = true;
+
   bool didIWIn = false;
   bool didIStartFirst = false;
-
-  bool showPlayerLeftDialog = false;
   bool myTurnCopy = false;
-  bool opponentLeft = false;
-  bool waitingForPlayer = false;
+  bool winnerDialogAlreadyShown = false;
   bool opponentWantsToPlayAgain = false;
-  bool modelScreenAlreadyShown = false;
 
   PlayOnlineProvider({required this.context}) {
-    if (!connected) initializeSocket(context);
+    if (!connected) initializeSocket();
   }
 
-  // Set iamPlayer1 to false if joining game
-  void change() {
-    opponentWantsToPlayAgain = false;
-    notifyListeners();
-  }
-
-  void initializeSocket(context) {
+  void initializeSocket() {
     if (!socket.connected) {
       socket.connect();
+      connected = socket.connected;
+      notifyListeners();
     }
 
-    // socket.onError((data) {
-    // });
-
-    // socket.onConnectTimeout((data) {
-
-    // });
-    // socket.onerror((data) => print(data));
     socket.onConnectError((data) {
-      showSnackBar("There was error .Please try again later.");
+      showSnackBar(context, "There was error .Please try again later.");
     });
 
     socket.onConnect((data) {
+      connected = socket.connected;
+      notifyListeners();
       socket.on("messageFromServer", (msg) {
         Message string = Message.fromJson(msg);
-        showSnackBar(string.data);
+        showSnackBar(context, string.data);
       });
 
       socket.onDisconnect(((data) {
-        showSnackBar("Disconnected from server");
+        connected = socket.connected;
+        notifyListeners();
+        showSnackBar(context, "Disconnected from server");
       }));
 
       socket.emit("messageToServer", "Successfully connected.");
@@ -77,36 +67,29 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
 
     socket.on("gameCreated", (data) {
       GameMessage gameMessage = GameMessage.fromJson(data);
-      showGameScreen = true;
       myTurn = false;
       room = gameMessage.room;
-      notifyListeners();
+      Navigator.of(context).pushNamed("/playOnlineGameScreen", arguments: this);
+      changeGameState(GameState.waitingForPlayerToJoin);
     });
 
-    socket.on("arrange", (data) {
-      if (!opponentLeft) {
+    socket.on("p2Joined", (data) {
+      if (gameState == GameState.waitingForPlayerToJoin) {
         GameMessage gameMessage = GameMessage.fromJson(data);
         opponentName = gameMessage.player2 as String;
-        showRoomAnouncement = false;
         iAmPlayer1 = true;
         myTurn = true;
 
         socket.emit("p1Detail",
             {"player1": myName, "player2": opponentName, "room": room});
-
-        notifyListeners();
-      } else {
-        // Reconnect player
-
+      } else if (gameState == GameState.waitingForPlayerToJoinAgain) {
         myTurn = myTurnCopy;
-        showRoomAnouncement = false;
-        showPlayerLeftDialog = false;
-        opponentLeft = false;
+        // showPlayerLeftDialog = false;
 
         List<String> xList = xButtons.map((e) => "0${e.toString()}").toList();
         List<String> oList = oButtons.map((e) => "0${e.toString()}").toList();
 
-        socket.emit("playerAlreadyLeft", {
+        socket.emit("allGameInfo", {
           "xList": xList,
           "oList": oList,
           "myScore": xWinCount,
@@ -119,56 +102,57 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
           "room": room,
         });
       }
-      notifyListeners();
+      changeGameState(GameState.playing);
     });
 
-    socket.on("details", (data) {
-      if (!data.toString().contains("TotalGames")) {
-        GameMessage gameMessage = GameMessage.fromJson(data);
-        room = gameMessage.room;
-        myButtonType = Player.O;
-        playerType = Player.O;
-        opponentName = gameMessage.player1 as String;
+    socket.on("p1Detail", (data) {
+      Navigator.of(context).pushNamed("/playOnlineGameScreen", arguments: this);
 
-        myTurn = false;
-        iAmPlayer1 = false;
-        showGameScreen = true;
-        showRoomAnouncement = false;
-      } else {
-        ReJoin rejoinMessage = ReJoin.fromJson(data);
+      GameMessage gameMessage = GameMessage.fromJson(data);
+      room = gameMessage.room;
+      myButtonType = Player.O;
+      playerType = Player.O;
+      opponentName = gameMessage.player1 as String;
 
-        opponentName = rejoinMessage.player1 as String;
-        room = rejoinMessage.room;
-        playerType = Player.X;
-        for (var element in rejoinMessage.xList!) {
-          element = int.parse(element);
-          super.onButtonClick(element);
-        }
+      myTurn = false;
+      iAmPlayer1 = false;
 
-        playerType = Player.O;
-        for (var element in rejoinMessage.oList!) {
-          element = int.parse(element);
-          super.onButtonClick(element);
-        }
+      changeGameState(GameState.playing);
+    });
 
-        if (rejoinMessage.player == Player.X) {
-          xWinCount = rejoinMessage.myScore;
-          tiesCount = rejoinMessage.draw;
-          oWinCount = rejoinMessage.totalGames - tiesCount - xWinCount;
-          myButtonType = Player.O;
-          iAmPlayer1 = false;
-        } else {
-          tiesCount = rejoinMessage.draw;
-          oWinCount = rejoinMessage.myScore;
-          xWinCount = rejoinMessage.totalGames - tiesCount - oWinCount;
-          myButtonType = Player.X;
-          iAmPlayer1 = true;
-        }
-        myTurn = !rejoinMessage.myTurn;
-        showGameScreen = true;
-        showRoomAnouncement = false;
+    socket.on("allGameInfo", (data) {
+      ReJoin rejoinMessage = ReJoin.fromJson(data);
+
+      opponentName = rejoinMessage.player1 as String;
+      room = rejoinMessage.room;
+      playerType = Player.X;
+      for (var element in rejoinMessage.xList!) {
+        element = int.parse(element);
+        super.onButtonClick(element);
       }
-      notifyListeners();
+
+      playerType = Player.O;
+      for (var element in rejoinMessage.oList!) {
+        element = int.parse(element);
+        super.onButtonClick(element);
+      }
+
+      if (rejoinMessage.player == Player.X) {
+        xWinCount = rejoinMessage.myScore;
+        tiesCount = rejoinMessage.draw;
+        oWinCount = rejoinMessage.totalGames - tiesCount - xWinCount;
+        myButtonType = Player.O;
+        iAmPlayer1 = false;
+      } else {
+        tiesCount = rejoinMessage.draw;
+        oWinCount = rejoinMessage.myScore;
+        xWinCount = rejoinMessage.totalGames - tiesCount - oWinCount;
+        myButtonType = Player.X;
+        iAmPlayer1 = true;
+      }
+      myTurn = !rejoinMessage.myTurn;
+
+      changeGameState(GameState.playing);
     });
 
     socket.on("game", (data) {
@@ -191,7 +175,6 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
 
     socket.on("winner", (data) {
       WinnerMessage gameMessage = WinnerMessage.fromJson(data);
-      // print("Who started First : ${gameMessage.whoStarted}");
       if (myButtonType == gameMessage.whoStarted) {
         didIStartFirst = true;
       } else {
@@ -228,7 +211,7 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
       if (winners) {
         myTurn = false;
         showWinnerDialog = true;
-        // modelScreenAlreadyShown = true;
+        // winnerDialogAlreadyShown = true;
         playerType = myButtonType;
       }
       notifyListeners();
@@ -236,91 +219,82 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
 
     socket.on("roomFull", (data) {
       Message message = Message.fromJson(data);
-      showSnackBar(message.data);
+      showSnackBar(context, message.data);
+      changeGameState(GameState.idle);
     });
     socket.on("wrongRoom", (data) {
       Message message = Message.fromJson(data);
-      showSnackBar(message.data);
+      showSnackBar(context, message.data);
+      changeGameState(GameState.idle);
     });
 
     socket.on("playerLeft", (_) {
       showWinnerDialog = false;
-      showPlayerLeftDialog = true;
+      // showPlayerLeftDialog = true;
       myTurnCopy = myTurn;
       myTurn = false;
-      opponentLeft = true;
 
-      notifyListeners();
+      changeGameState(GameState.opponentLeft);
     });
     socket.on("next-round", (_) {
-      if (waitingForPlayer) {
+      if (gameState == GameState.waitingForNextRoundAcceptance) {
         playerType = myButtonType;
         if (didIStartFirst) {
           myTurn = false;
         } else {
           myTurn = true;
         }
-        waitingForPlayer = false;
-        showRoomAnouncement = false;
+
         opponentWantsToPlayAgain = false;
+        changeGameState(GameState.playing);
       } else {
         opponentWantsToPlayAgain = true;
       }
       notifyListeners();
     });
-
-    connected = socket.connected;
+    socket.on("quit", (data) {
+      changeGameState(GameState.opponentQuit);
+    });
   }
 
   void disconnectSocket() {
     socket.disconnect();
   }
 
-  void showSnackBar(String text) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-      text,
-      textAlign: TextAlign.center,
-    )));
-  }
-
   void createGame() {
+    if (!connected) {
+      showSnackBar(
+          context, "Unable to connect server. Please try again later.");
+      return;
+    }
+    if (_gameState != GameState.idle) return;
+    changeGameState(GameState.creating);
     socket.emit("createGame", {"name": "Bharath"});
   }
 
   void joinGame(String roomName) {
+    if (!connected) {
+      showSnackBar(
+          context, "Unable to connect server. Please try again later.");
+      return;
+    }
+    if (_gameState != GameState.idle) return;
+    changeGameState(GameState.joining);
     socket.emit("joinGame", {"player2": myName, "room": roomName});
   }
 
   void waitForPlayer() {
-    showPlayerLeftDialog = false;
-    showRoomAnouncement = true;
+    // showPlayerLeftDialog = false;
 
-    notifyListeners();
+    changeGameState(GameState.waitingForPlayerToJoinAgain);
   }
 
   void changeModelToTrue() {
-    modelScreenAlreadyShown = true;
+    winnerDialogAlreadyShown = true;
   }
 
   void changeModelToFalse() {
-    modelScreenAlreadyShown = false;
-  }
-
-  void returnFunction() {
-    Navigator.of(context).pop();
-    changeModelToFalse();
-  }
-
-  void exitPage() {
-    if (showGameScreen) {
-      // showGameScreen = false;
-      notifyListeners();
-      return;
-    }
-    disconnectSocket();
-    Navigator.of(context).pop();
+    winnerDialogAlreadyShown = false;
   }
 
   @override
@@ -354,10 +328,8 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
     super.resetGame();
     if (!opponentWantsToPlayAgain) {
       myTurn = false;
-      showRoomAnouncement = true;
-      waitingForPlayer = true;
+      changeGameState(GameState.waitingForNextRoundAcceptance);
     } else {
-      // showWinnerDialog = false;
       opponentWantsToPlayAgain = false;
       playerType = myButtonType;
       if (didIStartFirst) {
@@ -365,10 +337,44 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
       } else {
         myTurn = true;
       }
+      changeGameState(GameState.playing);
     }
     socket.emit("next-round", {"room": room});
     changeModelToFalse();
 
     notifyListeners();
+  }
+
+  get gameState {
+    return _gameState;
+  }
+
+  GameState changeGameState(GameState gameState) {
+    _gameState = gameState;
+    // print(_gameState);
+    notifyListeners();
+    return _gameState;
+  }
+
+  void quitGame() {
+    socket.emit("quit", {"room": room});
+    Navigator.of(context).popUntil(ModalRoute.withName('/playOnline'));
+
+    super.resetGame();
+    super.completeReset();
+
+    // this scope variables reset
+    room = null;
+    opponentName = "Opponent";
+
+    iAmPlayer1 = true;
+    myButtonType = Player.X;
+    didIWIn = false;
+    didIStartFirst = false;
+    myTurnCopy = false;
+    opponentWantsToPlayAgain = false;
+    winnerDialogAlreadyShown = false;
+
+    changeGameState(GameState.idle);
   }
 }

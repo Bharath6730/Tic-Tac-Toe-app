@@ -10,6 +10,7 @@ class CenterButton extends StatelessWidget {
   final double radius;
   final Widget? child;
   final List<double> pad;
+  final BoxConstraints? constraints;
 
   const CenterButton(
       {Key? key,
@@ -21,12 +22,14 @@ class CenterButton extends StatelessWidget {
       required this.onPressed,
       required this.radius,
       this.child,
+      this.constraints,
       this.pad = const [15, 25]})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      constraints: constraints,
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
           color: backgroundColor,

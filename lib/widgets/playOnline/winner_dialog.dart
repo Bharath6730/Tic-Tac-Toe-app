@@ -55,6 +55,7 @@ class _OnlinePlayModalWidgetState extends State<OnlinePlayWinnerDialog>
   @override
   void dispose() {
     _controller.dispose();
+    hideOverlay();
     super.dispose();
   }
 
@@ -118,7 +119,7 @@ class _OnlinePlayModalWidgetState extends State<OnlinePlayWinnerDialog>
 
   void hideOverlay() async {
     overlayEntry?.remove();
-    // overlayEntry = null;
+    overlayEntry = null;
   }
 
   @override
@@ -137,55 +138,75 @@ class _OnlinePlayModalWidgetState extends State<OnlinePlayWinnerDialog>
       winColor = Colors.red;
     }
 
+    String headerTitle;
+    headerTitle = (!itsADraw) ? widget.winnerText : "ITS A TIE!";
+
     return DialogContainer(
-      header: Text((!itsADraw) ? widget.winnerText : "ITS A TIE!",
+      header: Text(headerTitle,
           style: const TextStyle(fontSize: 20, color: Colors.white),
           textAlign: TextAlign.center),
       body: showWinnerText(
           itsADraw: itsADraw, winColor: winColor, winner: widget.winner),
-      footer: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          SubmitButton(
-            backgroundColor: AppTheme.silverButtonColor,
-            shadowColor: AppTheme.silverShadowColor,
-            splashColor: AppTheme.silverHoverColor,
-            radius: 15,
-            onPressed: () {
-              hideOverlay();
-              widget.returnFunction();
-            },
-            child: Text(
-              "QUIT",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
-                  ?.copyWith(color: Colors.black),
-              textAlign: TextAlign.center,
+      footer: widget.provider.gameState == GameState.opponentQuit
+          ? Center(
+              child: QuitButton(onPressed: () {
+                hideOverlay();
+                widget.returnFunction();
+              }),
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                QuitButton(onPressed: () {
+                  hideOverlay();
+                  widget.returnFunction();
+                }),
+                ChangeNotifierProvider<PlayOnlineProvider>.value(
+                    value: widget.provider,
+                    child:
+                        Consumer<PlayOnlineProvider>(builder: (_, value, __) {
+                      if (value.opponentWantsToPlayAgain) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) async {
+                          showOverlay(context, key, value.opponentName);
+                        });
+                      }
+                      return NextRoundButton(
+                        resetGame: () {
+                          if (value.opponentWantsToPlayAgain) {
+                            hideOverlay();
+                          }
+                          Navigator.of(context).pop();
+
+                          value.resetGame();
+                        },
+                        key: key,
+                      );
+                    }))
+              ],
             ),
-          ),
-          ChangeNotifierProvider<PlayOnlineProvider>.value(
-              value: widget.provider,
-              child: Consumer<PlayOnlineProvider>(builder: (_, value, __) {
-                if (value.opponentWantsToPlayAgain) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) async {
-                    showOverlay(context, key, value.opponentName);
-                  });
-                }
-                return NextRoundButton(
-                  resetGame: () {
-                    if (value.opponentWantsToPlayAgain) {
-                      hideOverlay();
-                      value.returnFunction();
-                    } else {
-                      Navigator.of(context).pop();
-                    }
-                    value.resetGame();
-                  },
-                  key: key,
-                );
-              }))
-        ],
+    );
+  }
+}
+
+class QuitButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  const QuitButton({Key? key, required this.onPressed}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SubmitButton(
+      backgroundColor: AppTheme.silverButtonColor,
+      shadowColor: AppTheme.silverShadowColor,
+      splashColor: AppTheme.silverHoverColor,
+      radius: 15,
+      onPressed: onPressed,
+      child: Text(
+        "QUIT",
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(color: Colors.black),
+        textAlign: TextAlign.center,
       ),
     );
   }
