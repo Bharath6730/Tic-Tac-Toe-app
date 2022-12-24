@@ -1,0 +1,24 @@
+{
+  "name": "tic_tac_toe",
+  "version": "1.0.0",
+  "description": "Full stack Tic Tac Toe app that lets users make friends within the app and play and/or chat with friends in real time. ",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run server\"  \"npm run app\"",
+    "server": "cd server && npm start",
+    "app": "cd app && flutter run -d chrome"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bharath6730/Tic-Tac-Toe-app.git"
+  },
+  "author": "Bharath T",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bharath6730/Tic-Tac-Toe-app/issues"
+  },
+  "homepage": "https://github.com/Bharath6730/Tic-Tac-Toe-app#readme",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

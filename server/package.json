@@ -1,0 +1,17 @@
+{
+    "name": "tic_tac_toe",
+    "version": "1.0.0",
+    "description": "Backend for tic_tac_toe app",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon server.js"
+    },
+    "author": "Bharath T",
+    "license": "ISC",
+    "dependencies": {
+        "dotenv": "^16.0.3",
+        "express": "^4.18.2",
+        "socket.io": "^4.5.4"
+    }
+}
