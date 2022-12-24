@@ -12,13 +12,13 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   //   "transports": ["websocket"],
   //   "autoConnect": false,
   // });
-  io.Socket socket = io.io("http://192.168.1.174:3000/", <String, dynamic>{
+  io.Socket socket = io.io("http://172.20.138.84:3000/", <String, dynamic>{
     "transports": ["websocket"],
     "autoConnect": false,
   });
 
   BuildContext context;
-  final String myName = "Bharath";
+  late String myName;
   String opponentName = "Opponent";
   GameState _gameState = GameState.idle;
 
@@ -33,7 +33,9 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   bool winnerDialogAlreadyShown = false;
   bool opponentWantsToPlayAgain = false;
 
-  PlayOnlineProvider({required this.context}) {
+  PlayOnlineProvider({required this.context, required super.storage})
+      : super(gameMode: GameMode.playOnline) {
+    myName = storage.userName ?? "";
     if (!connected) initializeSocket();
   }
 
@@ -211,8 +213,15 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
       if (winners) {
         myTurn = false;
         showWinnerDialog = true;
-        // winnerDialogAlreadyShown = true;
         playerType = myButtonType;
+      }
+      if (winner == ButtonType.none) {
+        incrementKey("tie");
+      } else if (winner ==
+          (myButtonType == Player.X ? ButtonType.X : ButtonType.O)) {
+        incrementKey("win");
+      } else {
+        incrementKey("lose");
       }
       notifyListeners();
     });

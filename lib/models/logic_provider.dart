@@ -1,7 +1,17 @@
+import 'package:tic_tac_toe/providers/global_provider.dart';
+
 import '../utilities/utlility.dart';
 import 'xo_button_class.dart';
 
 class LogicProvider {
+  final LocalStorageProvider storage;
+  final GameMode gameMode;
+  late String gameModeStr;
+
+  LogicProvider({required this.storage, required this.gameMode}) {
+    gameModeStr = gameMode.toString().replaceAll("GameMode.", "");
+  }
+
   ButtonType? winner;
 
   Player playerType = Player.X;
@@ -141,5 +151,13 @@ class LogicProvider {
     } else {
       playerType = Player.X;
     }
+  }
+
+  void incrementKey(String key) {
+    key = gameModeStr + key;
+
+    int previousValue = storage.getInstance().getInt(key) ?? 0;
+    storage.getInstance().setInt(key, previousValue + 1);
+    print("$key : ${previousValue + 1}");
   }
 }

@@ -1,8 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:tic_tac_toe/utilities/utlility.dart';
 import './../models/logic_provider.dart';
 
 class PassAndPlayProvider extends LogicProvider with ChangeNotifier {
-  PassAndPlayProvider({required playerType}) {
+  PassAndPlayProvider({required playerType, required super.storage})
+      : super(
+          gameMode: GameMode.passAndPlay,
+        ) {
     this.playerType = playerType;
   }
 
@@ -40,17 +44,20 @@ class PassAndPlayProvider extends LogicProvider with ChangeNotifier {
   }
 
   void passAndPlayButtonClick(bool isChanged) {
-    bool winner = false;
+    bool winners = false;
 
-    winner = super.checkWinner();
+    winners = super.checkWinner();
 
-    if (winner) {
+    if (winners) {
       myTurn = false;
       showWinnerDialog = true;
     } else {
       if (isChanged) {
         togglePlayer();
       }
+    }
+    if (winner != null) {
+      incrementKey("games");
     }
   }
 }

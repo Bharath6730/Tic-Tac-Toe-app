@@ -4,7 +4,6 @@ import 'package:tic_tac_toe/widgets/dialogs/custom_dialog.dart';
 Widget restartDialog(
     {required BuildContext context, required VoidCallback restartFunction}) {
   return CustomDialog(
-      height: 270,
       headerTitle: "Restart Game?",
       body: const Text(
         "This will reset all the current game data including each player's win count.",

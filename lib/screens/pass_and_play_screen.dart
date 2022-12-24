@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/providers/global_provider.dart';
 import 'package:tic_tac_toe/providers/pass_and_play_provider.dart';
 import 'package:tic_tac_toe/utilities/dialog_animater.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
@@ -20,10 +21,12 @@ class PassAndPlayScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Player player = ModalRoute.of(context)?.settings.arguments as Player;
-
+    final LocalStorageProvider storageProvider =
+        Provider.of<LocalStorageProvider>(context, listen: false);
     return PopWithDialog(
         child: ChangeNotifierProvider(
-      create: (context) => PassAndPlayProvider(playerType: player),
+      create: (context) =>
+          PassAndPlayProvider(playerType: player, storage: storageProvider),
       child: Scaffold(
         appBar: AppBar(
           title: const CenterAppIcon(),

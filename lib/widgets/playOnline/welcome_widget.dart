@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/providers/global_provider.dart';
 import 'package:tic_tac_toe/providers/play_online_provider.dart';
 import 'package:tic_tac_toe/utilities/show_snackbar.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
@@ -18,130 +19,142 @@ class OnlinePlayWelcomeWidget extends StatefulWidget {
 
 class _OnlinePlayWelcomeWidgetState extends State<OnlinePlayWelcomeWidget> {
   final TextEditingController roomTextController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
+    final LocalStorageProvider storageProvider =
+        Provider.of<LocalStorageProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: const CenterAppIcon(),
         centerTitle: true,
       ),
       body: ChangeNotifierProvider(
-          create: (context) => PlayOnlineProvider(context: context),
+          create: (context) =>
+              PlayOnlineProvider(context: context, storage: storageProvider),
           child: Consumer<PlayOnlineProvider>(builder: (_, provider, __) {
-            return SingleChildScrollView(
-              child: Column(children: [
-                const SizedBox(
-                  height: 40,
-                ),
-                CenterContainer(
-                  height: 250,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Center(
-                          child: Text("Create Game",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge
-                                  ?.copyWith(color: Colors.white))),
-                      Text(
-                        "Create game and get room code ",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: Colors.white),
-                      ),
-                      SubmitButton(
-                        shadowColor: provider.connected
-                            ? AppTheme.xShadowColor
-                            : Colors.grey.withOpacity(0.8),
-                        backgroundColor: provider.connected
-                            ? AppTheme.xbuttonColor
-                            : Colors.grey,
-                        splashColor: provider.connected
-                            ? AppTheme.xHoverColor
-                            : Colors.grey,
-                        onPressed: provider.createGame,
-                        radius: 15,
-                        child: provider.gameState == GameState.creating
-                            ? const SizedCircularProgressIndicator()
-                            : Text("Get Room Code",
-                                style: Theme.of(context).textTheme.bodyMedium),
-                      )
-                    ],
+            return WillPopScope(
+              onWillPop: () {
+                provider.disconnectSocket();
+                return Future.value(true);
+              },
+              child: SingleChildScrollView(
+                child: Column(children: [
+                  const SizedBox(
+                    height: 40,
                   ),
-                ),
-                CenterContainer(
-                  height: 325,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Center(
-                          child: Text("Join Game",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge
-                                  ?.copyWith(color: Colors.white))),
-                      Text(
-                        "Join Game with a room Code ",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: Colors.white),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30),
-                        child: TextField(
-                          controller: roomTextController,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.normal),
-                          textAlign: TextAlign.center,
-                          decoration: const InputDecoration(
-                              contentPadding: EdgeInsets.all(0.0),
-                              hintText: "Enter room code",
-                              hintStyle: TextStyle(color: Colors.white),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppTheme.silverButtonColor)),
-                              focusColor: AppTheme.oButtonColor,
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.white))),
-                          textInputAction: TextInputAction.done,
-                          onSubmitted: (roomName) =>
-                              provider.joinGame(roomName),
+                  CenterContainer(
+                    height: 250,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Center(
+                            child: Text("Create Game",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(color: Colors.white))),
+                        Text(
+                          "Create game and get room code ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: Colors.white),
                         ),
-                      ),
-                      SubmitButton(
-                        shadowColor: provider.connected
-                            ? AppTheme.oShadowColor
-                            : Colors.grey.withOpacity(0.8),
-                        backgroundColor: provider.connected
-                            ? AppTheme.oButtonColor
-                            : Colors.grey,
-                        splashColor: provider.connected
-                            ? AppTheme.oHoverColor
-                            : Colors.grey,
-                        onPressed: () {
-                          if (roomTextController.text.isNotEmpty) {
-                            provider.joinGame(roomTextController.text);
-                          } else {
-                            showSnackBar(context,
-                                "Please enter room code to join game.");
-                          }
-                        },
-                        radius: 15,
-                        child: provider.gameState == GameState.joining
-                            ? const SizedCircularProgressIndicator()
-                            : Text("Join Game",
-                                style: Theme.of(context).textTheme.bodyMedium),
-                      ),
-                    ],
+                        SubmitButton(
+                          shadowColor: provider.connected
+                              ? AppTheme.xShadowColor
+                              : Colors.grey.withOpacity(0.8),
+                          backgroundColor: provider.connected
+                              ? AppTheme.xbuttonColor
+                              : Colors.grey,
+                          splashColor: provider.connected
+                              ? AppTheme.xHoverColor
+                              : Colors.grey,
+                          onPressed: provider.createGame,
+                          radius: 15,
+                          child: provider.gameState == GameState.creating
+                              ? const SizedCircularProgressIndicator()
+                              : Text("Get Room Code",
+                                  style:
+                                      Theme.of(context).textTheme.bodyMedium),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ]),
+                  CenterContainer(
+                    height: 325,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Center(
+                            child: Text("Join Game",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(color: Colors.white))),
+                        Text(
+                          "Join Game with a room Code ",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(color: Colors.white),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: TextField(
+                            controller: roomTextController,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.normal),
+                            textAlign: TextAlign.center,
+                            decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(0.0),
+                                hintText: "Enter room code",
+                                hintStyle: TextStyle(color: Colors.white),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: AppTheme.silverButtonColor)),
+                                focusColor: AppTheme.oButtonColor,
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.white))),
+                            textInputAction: TextInputAction.done,
+                            onSubmitted: (roomName) =>
+                                provider.joinGame(roomName),
+                          ),
+                        ),
+                        SubmitButton(
+                          shadowColor: provider.connected
+                              ? AppTheme.oShadowColor
+                              : Colors.grey.withOpacity(0.8),
+                          backgroundColor: provider.connected
+                              ? AppTheme.oButtonColor
+                              : Colors.grey,
+                          splashColor: provider.connected
+                              ? AppTheme.oHoverColor
+                              : Colors.grey,
+                          onPressed: () {
+                            if (roomTextController.text.isNotEmpty) {
+                              provider.joinGame(roomTextController.text);
+                            } else {
+                              showSnackBar(context,
+                                  "Please enter room code to join game.");
+                            }
+                          },
+                          radius: 15,
+                          child: provider.gameState == GameState.joining
+                              ? const SizedCircularProgressIndicator()
+                              : Text("Join Game",
+                                  style:
+                                      Theme.of(context).textTheme.bodyMedium),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
             );
           })),
     );

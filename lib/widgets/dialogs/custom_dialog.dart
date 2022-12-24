@@ -11,34 +11,19 @@ class CustomDialog extends StatelessWidget {
   final VoidCallback onLeftButtonPress;
   final String rightButtonTitle;
   final VoidCallback onRightButtonPress;
-  final double? height;
-  const CustomDialog(
-      {Key? key,
-      required this.headerTitle,
-      this.headerStyle,
-      required this.body,
-      required this.leftButtonTitle,
-      required this.onLeftButtonPress,
-      required this.rightButtonTitle,
-      required this.onRightButtonPress,
-      this.height})
-      : super(key: key);
+  const CustomDialog({
+    Key? key,
+    required this.headerTitle,
+    this.headerStyle,
+    required this.body,
+    required this.leftButtonTitle,
+    required this.onLeftButtonPress,
+    required this.rightButtonTitle,
+    required this.onRightButtonPress,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (height != null) {
-      return DialogContainer(
-        height: height,
-        header:
-            DialogHeader(headerTitle: headerTitle, headerStyle: headerStyle),
-        body: body,
-        footer: DialogFooter(
-            onLeftButtonPress: onLeftButtonPress,
-            leftButtonTitle: leftButtonTitle,
-            onRightButtonPress: onRightButtonPress,
-            rightButtonTitle: rightButtonTitle),
-      );
-    }
     return DialogContainer(
       header: DialogHeader(headerTitle: headerTitle, headerStyle: headerStyle),
       body: body,

@@ -34,7 +34,6 @@ class PlayerLeftDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomDialog(
-        height: 300,
         headerTitle: "Opponent Left the Game",
         headerStyle: const TextStyle(
             fontSize: 24, fontWeight: FontWeight.w700, color: Colors.white),

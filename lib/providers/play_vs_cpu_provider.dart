@@ -8,7 +8,8 @@ import './../models/logic_provider.dart';
 class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
   Player myPlayerType = Player.X;
   Player whoStartedFirst = Player.X;
-  PlayVsCPUProvider(Player player) {
+  PlayVsCPUProvider({required Player player, required super.storage})
+      : super(gameMode: GameMode.playVsCPU) {
     if (player == Player.X) {
       return;
     }
@@ -36,6 +37,7 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
     checkWinner = super.checkWinner();
 
     if (checkWinner) {
+      incrementKey("win");
       showWinnerDialog = true;
       didIWin = true;
     }
@@ -83,17 +85,32 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
     togglePlayer();
     super.onButtonClick(buttonId);
 
-    bool winner = false;
+    bool isWinner = false;
     if (xButtons.length >= 3 || oButtons.length >= 3) {
-      winner = super.checkWinner();
+      isWinner = super.checkWinner();
     }
-    if (winner) {
+    if (isWinner) {
       myTurn = false;
       showWinnerDialog = true;
       didIWin = false;
+      incrementKey("lose");
     } else {
+      if (winner == ButtonType.none) {
+        incrementKey("tie");
+      }
       myTurn = true;
     }
+    // bool winner = false;
+    // if (xButtons.length >= 3 || oButtons.length >= 3) {
+    //   winner = super.checkWinner();
+    // }
+    // if (winner) {
+    //   myTurn = false;
+    //   showWinnerDialog = true;
+    //   didIWin = false;
+    // } else {
+    //   myTurn = true;
+    // }
     togglePlayer();
 
     notifyListeners();

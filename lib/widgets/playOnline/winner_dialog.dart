@@ -141,49 +141,60 @@ class _OnlinePlayModalWidgetState extends State<OnlinePlayWinnerDialog>
     String headerTitle;
     headerTitle = (!itsADraw) ? widget.winnerText : "ITS A TIE!";
 
-    return DialogContainer(
-      header: Text(headerTitle,
-          style: const TextStyle(fontSize: 20, color: Colors.white),
-          textAlign: TextAlign.center),
-      body: showWinnerText(
-          itsADraw: itsADraw, winColor: winColor, winner: widget.winner),
-      footer: widget.provider.gameState == GameState.opponentQuit
-          ? Center(
-              child: QuitButton(onPressed: () {
-                hideOverlay();
-                widget.returnFunction();
-              }),
-            )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                QuitButton(onPressed: () {
-                  hideOverlay();
-                  widget.returnFunction();
-                }),
-                ChangeNotifierProvider<PlayOnlineProvider>.value(
-                    value: widget.provider,
-                    child:
-                        Consumer<PlayOnlineProvider>(builder: (_, value, __) {
-                      if (value.opponentWantsToPlayAgain) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) async {
-                          showOverlay(context, key, value.opponentName);
-                        });
-                      }
-                      return NextRoundButton(
-                        resetGame: () {
-                          if (value.opponentWantsToPlayAgain) {
-                            hideOverlay();
-                          }
-                          Navigator.of(context).pop();
-
-                          value.resetGame();
-                        },
-                        key: key,
-                      );
-                    }))
-              ],
+    return ChangeNotifierProvider<PlayOnlineProvider>.value(
+      value: widget.provider,
+      child: DialogContainer(
+        header: Text(headerTitle,
+            style: const TextStyle(fontSize: 20, color: Colors.white),
+            textAlign: TextAlign.center),
+        body: Column(
+          children: [
+            showWinnerText(
+                itsADraw: itsADraw, winColor: winColor, winner: widget.winner),
+            const SizedBox(
+              height: 30,
             ),
+            // TODO : Show Winner Footer here and show profile pics with name during game.
+            // Consumer<PlayOnlineProvider>(builder: (_, value, __) {
+            //   return GameFooter(
+            //     xWinCount: value.xWinCount,
+            //     oWinCount: value.oWinCount,
+            //     tiesCount: value.tiesCount,
+            //     xCustomName: value.iAmPlayer1 ? "You" : value.opponentName,
+            //     oCustomName: value.iAmPlayer1 ? value.opponentName : "You",
+            //     // onlyName: true,
+            //   );
+            // }),
+          ],
+        ),
+        footer: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            QuitButton(onPressed: () {
+              hideOverlay();
+              widget.returnFunction();
+            }),
+            Consumer<PlayOnlineProvider>(builder: (_, value, __) {
+              if (value.opponentWantsToPlayAgain) {
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  showOverlay(context, key, value.opponentName);
+                });
+              }
+              return NextRoundButton(
+                resetGame: () {
+                  if (value.opponentWantsToPlayAgain) {
+                    hideOverlay();
+                  }
+                  Navigator.of(context).pop();
+
+                  value.resetGame();
+                },
+                key: key,
+              );
+            })
+          ],
+        ),
+      ),
     );
   }
 }

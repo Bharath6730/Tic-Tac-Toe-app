@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/providers/global_provider.dart';
 import 'package:tic_tac_toe/providers/play_vs_cpu_provider.dart';
 import 'package:tic_tac_toe/utilities/dialog_animater.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
@@ -18,9 +19,13 @@ class PlayVsCPUScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final Player selectedPlayer =
         ModalRoute.of(context)?.settings.arguments as Player;
+    final LocalStorageProvider storageProvider =
+        Provider.of<LocalStorageProvider>(context, listen: false);
+
     return PopWithDialog(
       child: ChangeNotifierProvider(
-        create: (context) => PlayVsCPUProvider(selectedPlayer),
+        create: (context) =>
+            PlayVsCPUProvider(player: selectedPlayer, storage: storageProvider),
         child: Scaffold(
           appBar: AppBar(
             title: const CenterAppIcon(),

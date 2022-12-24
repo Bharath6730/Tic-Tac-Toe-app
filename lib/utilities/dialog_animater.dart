@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 Future<bool> showAnimatedDialog(
-    {required BuildContext context, required Widget dialog}) async {
+    {required BuildContext context,
+    required Widget dialog,
+    bool? dismissable}) async {
   final value = await showGeneralDialog(
       barrierColor: Colors.black.withOpacity(0.5),
       transitionBuilder: (context, a1, a2, widget) {
@@ -11,7 +13,7 @@ Future<bool> showAnimatedDialog(
         );
       },
       transitionDuration: const Duration(milliseconds: 200),
-      barrierDismissible: true,
+      barrierDismissible: (dismissable != null) ? dismissable : true,
       barrierLabel: '',
       context: context,
       pageBuilder: (context, animation1, animation2) {
