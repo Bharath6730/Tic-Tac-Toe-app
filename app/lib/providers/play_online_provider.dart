@@ -12,7 +12,7 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   //   "transports": ["websocket"],
   //   "autoConnect": false,
   // });
-  io.Socket socket = io.io("http://172.20.138.84:3000/", <String, dynamic>{
+  io.Socket socket = io.io("http://192.168.200.96:3000/", <String, dynamic>{
     "transports": ["websocket"],
     "autoConnect": false,
   });

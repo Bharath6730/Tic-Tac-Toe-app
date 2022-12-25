@@ -2,16 +2,20 @@
     "name": "tic_tac_toe",
     "version": "1.0.0",
     "description": "Backend for tic_tac_toe app",
-    "main": "server.js",
+    "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon server.js"
+        "start": "nodemon index.js"
     },
     "author": "Bharath T",
     "license": "ISC",
     "dependencies": {
         "dotenv": "^16.0.3",
         "express": "^4.18.2",
-        "socket.io": "^4.5.4"
+        "jsonwebtoken": "^9.0.0",
+        "mongoose": "^6.8.1",
+        "socket.io": "^4.5.4",
+        "uuid": "^9.0.0",
+        "validator": "^13.7.0"
     }
 }
