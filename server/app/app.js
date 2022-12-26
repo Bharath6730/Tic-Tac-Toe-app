@@ -6,7 +6,7 @@ const authRouter = require("./routes/authRoutes")
 app.use("/", authRouter)
 
 app.get("/", async (req, res, next) => {
-    const token = verifyToken(req.body.token)
+    const token = await verifyToken(req.body.token)
 
     if (!token.valid) {
         return next(new Error("Invalid Token!"))

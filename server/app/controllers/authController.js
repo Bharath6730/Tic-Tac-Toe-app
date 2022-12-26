@@ -5,13 +5,22 @@ const pbkdf2Hash = require("../../utilities/hashPassword")
 const catchAsync = require("./../../utilities/catchAsync")
 const jwt = require("jsonwebtoken")
 
-const createAndSendToken = (user, res, message) => {
-    const token = jwt.sign(
-        {
-            id: user._id,
-        },
-        process.env.JWT_SECRET,
-    )
+const signJWT = (id) =>
+    new Promise((resolve, reject) => {
+        jwt.sign(
+            {
+                id: id,
+            },
+            process.env.JWT_SECRET,
+            (err, token) => {
+                if (err) reject(err)
+                resolve(token)
+            },
+        )
+    })
+
+const createAndSendToken = catchAsync(async (user, res, message) => {
+    const token = await signJWT(user._id)
 
     res.status(200).json({
         status: "success",
@@ -24,7 +33,7 @@ const createAndSendToken = (user, res, message) => {
             token,
         },
     })
-}
+})
 
 exports.signUpUser = catchAsync(async (req, res, next) => {
     const password = req.body.password

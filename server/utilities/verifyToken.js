@@ -1,15 +1,15 @@
 const jwt = require("jsonwebtoken")
 
 module.exports = (token) => {
-    try {
-        const data = jwt.verify(token, process.env.JWT_SECRET)
-        return {
-            valid: true,
-            data,
-        }
-    } catch (err) {
-        return {
-            valid: false,
-        }
+    const decodedToken = {
+        valid: false,
     }
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, process.env.JWT_SECRET, (err, data) => {
+            if (err) return resolve(decodedToken)
+            decodedToken.valid = true
+            decodedToken.data = data
+            resolve(decodedToken)
+        })
+    })
 }
