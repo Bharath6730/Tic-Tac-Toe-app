@@ -12,9 +12,12 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
   //   "transports": ["websocket"],
   //   "autoConnect": false,
   // });
-  io.Socket socket = io.io("http://192.168.200.96:3000/", <String, dynamic>{
+  static const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYTk4ODRlOTdiNWI4NGUxY2I3MDU1MCIsImlhdCI6MTY3MjA1NDg2Mn0.pPH--nfe-ZsGp-aCTpCIdLJF1Y21N1P6wkmDyiBgcJQ";
+  io.Socket socket = io.io("http://192.168.1.174:3000/", <String, dynamic>{
     "transports": ["websocket"],
     "autoConnect": false,
+    "auth": {"token": token}
   });
 
   BuildContext context;
@@ -48,6 +51,11 @@ class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
 
     socket.onConnectError((data) {
       showSnackBar(context, "There was error .Please try again later.");
+    });
+
+    socket.onError((data) {
+      print(data);
+      print(socket.connected);
     });
 
     socket.onConnect((data) {

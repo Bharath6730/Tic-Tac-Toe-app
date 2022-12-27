@@ -1,6 +1,6 @@
-const crypto = require("crypto")
+import crypto from "crypto"
 
-const pbkdf2Hash = (pass, salt) => {
+const pbkdf2Hash = (pass: string, salt: string) => {
     return new Promise((resolve, reject) => {
         crypto.pbkdf2(
             pass,
@@ -15,4 +15,4 @@ const pbkdf2Hash = (pass, salt) => {
     })
 }
 
-module.exports = pbkdf2Hash
+export default pbkdf2Hash

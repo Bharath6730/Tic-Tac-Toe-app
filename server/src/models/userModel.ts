@@ -1,7 +1,7 @@
-const mongoose = require("mongoose")
-const Validator = require("validator")
+import { Schema, model } from "mongoose"
+import Validator from "validator"
 
-const userSchema = mongoose.Schema(
+const userSchema = new Schema(
     {
         username: {
             type: String,
@@ -11,7 +11,7 @@ const userSchema = mongoose.Schema(
             unique: true,
             trim: true,
             validate: {
-                validator: function (name) {
+                validator: function (name: string) {
                     // Allow only Alphabets,Numbers,Undersores and space
                     return /^[a-z0-9-_\s]+$/i.test(name)
                 },
@@ -53,5 +53,5 @@ userSchema.pre("save", function (next) {
     next()
 })
 
-const User = mongoose.model("User", userSchema)
-module.exports = User
+const User = model("User", userSchema)
+export default User
