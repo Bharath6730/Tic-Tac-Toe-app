@@ -8,6 +8,7 @@ interface publicUserData {
 
 interface customSocket extends Socket {
     user: publicUserData
+    gameRoom?: string
 }
 
 export { customSocket, publicUserData }

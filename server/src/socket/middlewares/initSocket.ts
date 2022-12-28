@@ -1,12 +1,11 @@
 import { customSocket } from "customSocket"
+import { userData, userStatus } from "./../../types/userGameData"
 import redis from "./../../redis"
+import { setUserStatus } from "./../../utilities/redisHelpers"
 
 export default async (socket: customSocket, next: any) => {
     // Set socket as online
-    // const userData = {
-    //     connected: "online",
-    // }
-    // await redis.hmset(`user:${socket.user.publicId}`, userData)
+    await setUserStatus(socket.user.publicId, userStatus.online)
 
     // Join publicId room
     socket.join(socket.user.publicId)
