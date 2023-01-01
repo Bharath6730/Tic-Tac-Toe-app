@@ -12,4 +12,5 @@ export default async (io: Server, socket: customSocket) => {
 
     // TODO Set user offline and inform all friends
     await setUserStatus(socket.user.publicId, userStatus.offline)
+    console.log(socket.user.username + "  Disconnected")
 }

@@ -4,6 +4,8 @@ import 'dart:math' as math;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/providers/play_online_provider.dart';
+import 'package:tic_tac_toe/providers/play_online_provider_renewed.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
 import 'package:tic_tac_toe/widgets/buttons/submit_button.dart';
 import 'package:tic_tac_toe/widgets/dialogs/dialog_container.dart';
@@ -12,7 +14,7 @@ import 'package:tic_tac_toe/widgets/dialogs/model_widget.dart';
 class OnlinePlayWinnerDialog extends StatefulWidget {
   final VoidCallback resetGame;
   final VoidCallback returnFunction;
-  final ButtonType winner;
+  final WinnerType winner;
   final String winnerText;
   final PlayOnlineProvider provider;
 
@@ -129,8 +131,8 @@ class _OnlinePlayModalWidgetState extends State<OnlinePlayWinnerDialog>
 
     final GlobalKey key = GlobalKey();
 
-    if (widget.winner != ButtonType.none) {
-      winColor = (widget.winner == ButtonType.X)
+    if (widget.winner != WinnerType.draw) {
+      winColor = (widget.winner == WinnerType.X)
           ? AppTheme.xbuttonColor
           : AppTheme.oButtonColor;
     } else {
@@ -177,7 +179,7 @@ class _OnlinePlayModalWidgetState extends State<OnlinePlayWinnerDialog>
             Consumer<PlayOnlineProvider>(builder: (_, value, __) {
               if (value.opponentWantsToPlayAgain) {
                 WidgetsBinding.instance.addPostFrameCallback((_) async {
-                  showOverlay(context, key, value.opponentName);
+                  showOverlay(context, key, value.opponentDetails.name);
                 });
               }
               return NextRoundButton(

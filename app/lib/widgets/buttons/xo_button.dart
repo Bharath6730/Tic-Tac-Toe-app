@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 import '../../models/xo_button_class.dart';
 
 import '../../utilities/utlility.dart';

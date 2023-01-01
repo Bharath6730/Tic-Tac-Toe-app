@@ -3,9 +3,9 @@ import { v4 as uuidv4 } from "uuid"
 import randomString from "random-string-generator"
 
 import { userStatus } from "userGameData"
-import { Game } from "./../../types/gametypes"
 import { customSocket } from "customSocket"
-import { setUserStatus } from "./../../utilities/redisHelpers"
+import { setGameData, setUserStatus } from "./../../utilities/redisHelpers"
+import Game from "./../../models/gameMode"
 
 export default async (socket: customSocket, data: any) => {
     let room: string
@@ -20,11 +20,10 @@ export default async (socket: customSocket, data: any) => {
     socket.gameRoom = room
 
     const game = new Game(room, socket.user)
-    const gameString = JSON.stringify(game)
 
     await Promise.all([
         setUserStatus(socket.user.publicId, userStatus.playing, room),
-        redis.set(`game:${room}`, gameString),
+        setGameData(game),
     ])
     socket.emit("gameCreated", { room: room })
 }

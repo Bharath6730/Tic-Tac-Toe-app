@@ -1,14 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:tic_tac_toe/utilities/utlility.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 
 import './../models/logic_provider.dart';
 
 class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
   Player myPlayerType = Player.X;
   Player whoStartedFirst = Player.X;
-  PlayVsCPUProvider({required Player player, required super.storage})
+  PlayVsCPUProvider({required Player player})
       : super(gameMode: GameMode.playVsCPU) {
     if (player == Player.X) {
       return;
@@ -21,7 +21,7 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
   bool didIWin = false;
   @override
   bool onButtonClick(int id) {
-    if (winner != null) {
+    if (winner != WinnerType.none) {
       showWinnerDialog = true;
       notifyListeners();
       return false;
@@ -37,7 +37,6 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
     checkWinner = super.checkWinner();
 
     if (checkWinner) {
-      incrementKey("win");
       showWinnerDialog = true;
       didIWin = true;
     }
@@ -93,11 +92,7 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
       myTurn = false;
       showWinnerDialog = true;
       didIWin = false;
-      incrementKey("lose");
     } else {
-      if (winner == ButtonType.none) {
-        incrementKey("tie");
-      }
       myTurn = true;
     }
     // bool winner = false;

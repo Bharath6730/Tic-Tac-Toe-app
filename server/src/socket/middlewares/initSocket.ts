@@ -1,6 +1,5 @@
 import { customSocket } from "customSocket"
-import { userData, userStatus } from "./../../types/userGameData"
-import redis from "./../../redis"
+import { userStatus } from "./../../types/userGameData"
 import { setUserStatus } from "./../../utilities/redisHelpers"
 
 export default async (socket: customSocket, next: any) => {

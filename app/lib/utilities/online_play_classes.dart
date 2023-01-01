@@ -1,3 +1,4 @@
+import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
 
 class Message {
@@ -7,6 +8,16 @@ class Message {
 
   factory Message.fromJson(Map<String, dynamic> json) {
     return Message(data: json['data']);
+  }
+}
+
+class roomMessage {
+  String room;
+  roomMessage(this.room);
+
+  factory roomMessage.fromJson(Map<String, dynamic> json) {
+    String room = json['room'];
+    return roomMessage(room);
   }
 }
 

@@ -6,7 +6,7 @@ const userSchema = new Schema(
         username: {
             type: String,
             required: true,
-            min: [4, "Name must atleast contain 4 charcaters"],
+            min: [3, "Name must atleast contain 4 charcaters"],
             max: [20, "Name can only contain 20 charcaters"],
             unique: true,
             trim: true,

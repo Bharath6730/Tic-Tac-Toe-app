@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/widgets/dialogs/custom_dialog.dart';
 import '../../utilities/utlility.dart';
 
 class WinnerDialog extends StatelessWidget {
   final VoidCallback resetGame;
   final VoidCallback returnFunction;
-  final ButtonType winner;
+  final WinnerType winner;
   final String winnerText;
 
   const WinnerDialog({
@@ -24,8 +25,8 @@ class WinnerDialog extends StatelessWidget {
     Color winColor;
     bool itsADraw = false;
 
-    if (winner != ButtonType.none) {
-      winColor = (winner == ButtonType.X)
+    if (winner != WinnerType.draw) {
+      winColor = (winner == WinnerType.X)
           ? AppTheme.xbuttonColor
           : AppTheme.oButtonColor;
     } else {
@@ -50,11 +51,11 @@ class WinnerDialog extends StatelessWidget {
 Widget showWinnerText(
     {required bool itsADraw,
     required Color winColor,
-    required ButtonType winner}) {
+    required WinnerType winner}) {
   return (!itsADraw)
       ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           SvgPicture.asset(
-            getAssetLink(winner),
+            getAssetLink(winner == WinnerType.X ? ButtonType.X : ButtonType.O),
             height: 28,
           ),
           const SizedBox(

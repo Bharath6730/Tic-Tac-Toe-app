@@ -1,397 +1,404 @@
-import 'package:flutter/material.dart';
-import 'package:socket_io_client/socket_io_client.dart' as io;
-import 'package:tic_tac_toe/utilities/online_play_classes.dart';
-import 'package:tic_tac_toe/utilities/show_snackbar.dart';
-import 'package:tic_tac_toe/utilities/utlility.dart';
+// import 'package:flutter/material.dart';
+// import 'package:socket_io_client/socket_io_client.dart' as io;
+// import 'package:tic_tac_toe/services/socket_service.dart';
+// import 'package:tic_tac_toe/utilities/enums.dart';
+// import 'package:tic_tac_toe/utilities/online_play_classes.dart';
+// import 'package:tic_tac_toe/utilities/show_snackbar.dart';
+// import 'package:tic_tac_toe/utilities/utlility.dart';
 
-import './../models/logic_provider.dart';
+// import './../models/logic_provider.dart';
 
-class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
-  // io.Socket socket =
-  //     io.io("https://bharath6730.herokuapp.com/", <String, dynamic>{
-  //   "transports": ["websocket"],
-  //   "autoConnect": false,
-  // });
-  static const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYTk4ODRlOTdiNWI4NGUxY2I3MDU1MCIsImlhdCI6MTY3MjA1NDg2Mn0.pPH--nfe-ZsGp-aCTpCIdLJF1Y21N1P6wkmDyiBgcJQ";
-  io.Socket socket = io.io("http://192.168.1.174:3000/", <String, dynamic>{
-    "transports": ["websocket"],
-    "autoConnect": false,
-    "auth": {"token": token}
-  });
+// class PlayOnlineProvider extends LogicProvider with ChangeNotifier {
+//   // io.Socket socket =
+//   //     io.io("https://bharath6730.herokuapp.com/", <String, dynamic>{
+//   //   "transports": ["websocket"],
+//   //   "autoConnect": false,
+//   // });
 
-  BuildContext context;
-  late String myName;
-  String opponentName = "Opponent";
-  GameState _gameState = GameState.idle;
+//   static const token2 =
+//       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYTdlMGE1YTlkMDRkN2IzYzFhMTkwNSIsImlhdCI6MTY3MjEzMjUzM30.HsniUysmMaRK362sQirGDWAhjQysoo9mD-2MoMq1BmM";
+//   static const token =
+//       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzYTk4ODRlOTdiNWI4NGUxY2I3MDU1MCIsImlhdCI6MTY3MjA1NDg2Mn0.pPH--nfe-ZsGp-aCTpCIdLJF1Y21N1P6wkmDyiBgcJQ";
+//   io.Socket socket = SocketService().socketInstance;
 
-  String? room;
-  bool connected = false;
-  bool iAmPlayer1 = true;
-  Player myButtonType = Player.X;
+//   BuildContext context;
+//   late String myName;
+//   String opponentName = "Opponent";
+//   GameState _gameState = GameState.idle;
 
-  bool didIWIn = false;
-  bool didIStartFirst = false;
-  bool myTurnCopy = false;
-  bool winnerDialogAlreadyShown = false;
-  bool opponentWantsToPlayAgain = false;
+//   String? room;
+//   bool connected = false;
+//   bool iAmPlayer1 = true;
+//   Player myButtonType = Player.X;
 
-  PlayOnlineProvider({required this.context, required super.storage})
-      : super(gameMode: GameMode.playOnline) {
-    myName = storage.userName ?? "";
-    if (!connected) initializeSocket();
-  }
+//   bool didIWIn = false;
+//   bool didIStartFirst = false;
+//   bool myTurnCopy = false;
+//   bool winnerDialogAlreadyShown = false;
+//   bool opponentWantsToPlayAgain = false;
 
-  void initializeSocket() {
-    if (!socket.connected) {
-      socket.connect();
-      connected = socket.connected;
-      notifyListeners();
-    }
+//   PlayOnlineProvider({
+//     required this.context,
+//   }) : super(gameMode: GameMode.playOnline) {
+//     connected = socket.connected;
+//     initializeSocket();
+//   }
 
-    socket.onConnectError((data) {
-      showSnackBar(context, "There was error .Please try again later.");
-    });
+//   void initializeSocket() {
+//     // var newToken = (myName == "Bharath") ? token : token2;
 
-    socket.onError((data) {
-      print(data);
-      print(socket.connected);
-    });
+//     // if (!socket.connected) {
+//     //   print("Connecting :$connected");
+//     //   socket.connect();
+//     //   connected = socket.connected;
+//     //   notifyListeners();
+//     // }
 
-    socket.onConnect((data) {
-      connected = socket.connected;
-      notifyListeners();
-      socket.on("messageFromServer", (msg) {
-        Message string = Message.fromJson(msg);
-        showSnackBar(context, string.data);
-      });
+//     socket.onConnectError((data) {
+//       showSnackBar(context, "There was error .Please try again later.");
+//     });
 
-      socket.onDisconnect(((data) {
-        connected = socket.connected;
-        notifyListeners();
-        showSnackBar(context, "Disconnected from server");
-      }));
+//     socket.onError((data) {
+//       print(data);
+//       print(socket.connected);
+//     });
 
-      socket.emit("messageToServer", "Successfully connected.");
-    });
+//     // socket.onConnect((data) {
+//     //   connected = socket.connected;
+//     //   notifyListeners();
+//     //   socket.on("messageFromServer", (msg) {
+//     //     Message string = Message.fromJson(msg);
+//     //     showSnackBar(context, string.data);
+//     //   });
 
-    socket.on("gameCreated", (data) {
-      GameMessage gameMessage = GameMessage.fromJson(data);
-      myTurn = false;
-      room = gameMessage.room;
-      Navigator.of(context).pushNamed("/playOnlineGameScreen", arguments: this);
-      changeGameState(GameState.waitingForPlayerToJoin);
-    });
+//     //   socket.onDisconnect(((data) {
+//     //     connected = socket.connected;
+//     //     notifyListeners();
+//     //     showSnackBar(context, "Disconnected from server");
+//     //   }));
 
-    socket.on("p2Joined", (data) {
-      if (gameState == GameState.waitingForPlayerToJoin) {
-        GameMessage gameMessage = GameMessage.fromJson(data);
-        opponentName = gameMessage.player2 as String;
-        iAmPlayer1 = true;
-        myTurn = true;
+//     //   socket.emit("messageToServer", "Successfully connected.");
+//     // });
 
-        socket.emit("p1Detail",
-            {"player1": myName, "player2": opponentName, "room": room});
-      } else if (gameState == GameState.waitingForPlayerToJoinAgain) {
-        myTurn = myTurnCopy;
-        // showPlayerLeftDialog = false;
+//     // socket.on("gameCreated", (data) {
+//     //   print("GameCreated" + data);
+//     //   // roomMessage roomData = roomMessage.fromJson(data);
+//     //   // myTurn = false;
+//     //   // room = roomData.room;
+//     //   // Navigator.of(context).pushNamed("/playOnlineGameScreen", arguments: this);
+//     //   // changeGameState(GameState.waitingForPlayerToJoin);
+//     // });
 
-        List<String> xList = xButtons.map((e) => "0${e.toString()}").toList();
-        List<String> oList = oButtons.map((e) => "0${e.toString()}").toList();
+//     socket.on("p2Joined", (data) {
+//       if (gameState == GameState.waitingForPlayerToJoin) {
+//         GameMessage gameMessage = GameMessage.fromJson(data);
+//         opponentName = gameMessage.player2 as String;
+//         iAmPlayer1 = true;
+//         myTurn = true;
 
-        socket.emit("allGameInfo", {
-          "xList": xList,
-          "oList": oList,
-          "myScore": xWinCount,
-          "TotalGames": xWinCount + tiesCount + oWinCount,
-          "draw": tiesCount,
-          "oppName": opponentName,
-          "Player": (myButtonType == Player.X) ? "X" : "O",
-          "myTurn": myTurn,
-          "player1": myName,
-          "room": room,
-        });
-      }
-      changeGameState(GameState.playing);
-    });
+//         socket.emit("p1Detail",
+//             {"player1": myName, "player2": opponentName, "room": room});
+//       } else if (gameState == GameState.waitingForPlayerToJoinAgain) {
+//         myTurn = myTurnCopy;
+//         // showPlayerLeftDialog = false;
 
-    socket.on("p1Detail", (data) {
-      Navigator.of(context).pushNamed("/playOnlineGameScreen", arguments: this);
+//         List<String> xList = xButtons.map((e) => "0${e.toString()}").toList();
+//         List<String> oList = oButtons.map((e) => "0${e.toString()}").toList();
 
-      GameMessage gameMessage = GameMessage.fromJson(data);
-      room = gameMessage.room;
-      myButtonType = Player.O;
-      playerType = Player.O;
-      opponentName = gameMessage.player1 as String;
+//         socket.emit("allGameInfo", {
+//           "xList": xList,
+//           "oList": oList,
+//           "myScore": xWinCount,
+//           "TotalGames": xWinCount + tiesCount + oWinCount,
+//           "draw": tiesCount,
+//           "oppName": opponentName,
+//           "Player": (myButtonType == Player.X) ? "X" : "O",
+//           "myTurn": myTurn,
+//           "player1": myName,
+//           "room": room,
+//         });
+//       }
+//       changeGameState(GameState.playing);
+//     });
 
-      myTurn = false;
-      iAmPlayer1 = false;
+//     socket.on("p1Detail", (data) {
+//       Navigator.of(context).pushNamed("/playOnlineGameScreen", arguments: this);
 
-      changeGameState(GameState.playing);
-    });
+//       GameMessage gameMessage = GameMessage.fromJson(data);
+//       room = gameMessage.room;
+//       myButtonType = Player.O;
+//       playerType = Player.O;
+//       opponentName = gameMessage.player1 as String;
 
-    socket.on("allGameInfo", (data) {
-      ReJoin rejoinMessage = ReJoin.fromJson(data);
+//       myTurn = false;
+//       iAmPlayer1 = false;
 
-      opponentName = rejoinMessage.player1 as String;
-      room = rejoinMessage.room;
-      playerType = Player.X;
-      for (var element in rejoinMessage.xList!) {
-        element = int.parse(element);
-        super.onButtonClick(element);
-      }
+//       changeGameState(GameState.playing);
+//     });
 
-      playerType = Player.O;
-      for (var element in rejoinMessage.oList!) {
-        element = int.parse(element);
-        super.onButtonClick(element);
-      }
+//     socket.on("allGameInfo", (data) {
+//       ReJoin rejoinMessage = ReJoin.fromJson(data);
 
-      if (rejoinMessage.player == Player.X) {
-        xWinCount = rejoinMessage.myScore;
-        tiesCount = rejoinMessage.draw;
-        oWinCount = rejoinMessage.totalGames - tiesCount - xWinCount;
-        myButtonType = Player.O;
-        iAmPlayer1 = false;
-      } else {
-        tiesCount = rejoinMessage.draw;
-        oWinCount = rejoinMessage.myScore;
-        xWinCount = rejoinMessage.totalGames - tiesCount - oWinCount;
-        myButtonType = Player.X;
-        iAmPlayer1 = true;
-      }
-      myTurn = !rejoinMessage.myTurn;
+//       opponentName = rejoinMessage.player1 as String;
+//       room = rejoinMessage.room;
+//       playerType = Player.X;
+//       for (var element in rejoinMessage.xList!) {
+//         element = int.parse(element);
+//         super.onButtonClick(element);
+//       }
 
-      changeGameState(GameState.playing);
-    });
+//       playerType = Player.O;
+//       for (var element in rejoinMessage.oList!) {
+//         element = int.parse(element);
+//         super.onButtonClick(element);
+//       }
 
-    socket.on("game", (data) {
-      GameMessage gameMessage = GameMessage.fromJson(data);
-      togglePlayer();
+//       if (rejoinMessage.player == Player.X) {
+//         xWinCount = rejoinMessage.myScore;
+//         tiesCount = rejoinMessage.draw;
+//         oWinCount = rejoinMessage.totalGames - tiesCount - xWinCount;
+//         myButtonType = Player.O;
+//         iAmPlayer1 = false;
+//       } else {
+//         tiesCount = rejoinMessage.draw;
+//         oWinCount = rejoinMessage.myScore;
+//         xWinCount = rejoinMessage.totalGames - tiesCount - oWinCount;
+//         myButtonType = Player.X;
+//         iAmPlayer1 = true;
+//       }
+//       myTurn = !rejoinMessage.myTurn;
 
-      int id;
-      if (myButtonType == Player.X) {
-        id = gameMessage.Y as int;
-      } else {
-        id = gameMessage.X as int;
-      }
-      super.onButtonClick(id);
+//       changeGameState(GameState.playing);
+//     });
 
-      togglePlayer();
-      myTurn = true;
+//     socket.on("game", (data) {
+//       GameMessage gameMessage = GameMessage.fromJson(data);
+//       togglePlayer();
 
-      notifyListeners();
-    });
+//       int id;
+//       if (myButtonType == Player.X) {
+//         id = gameMessage.Y as int;
+//       } else {
+//         id = gameMessage.X as int;
+//       }
+//       super.onButtonClick(id);
 
-    socket.on("winner", (data) {
-      WinnerMessage gameMessage = WinnerMessage.fromJson(data);
-      if (myButtonType == gameMessage.whoStarted) {
-        didIStartFirst = true;
-      } else {
-        didIStartFirst = false;
-      }
-      if (gameMessage.winner == "X") {
-        playerType = Player.X;
-        if (myButtonType != Player.X) {
-          super.onButtonClick(gameMessage.X as int);
-          didIWIn = false;
-        } else {
-          didIWIn = true;
-        }
-      } else if (gameMessage.winner == "O") {
-        playerType = Player.O;
-        if (myButtonType != Player.O) {
-          super.onButtonClick(gameMessage.Y as int);
-          didIWIn = false;
-        } else {
-          didIWIn = true;
-        }
-      } else {
-        if (gameMessage.X != null) {
-          playerType = Player.X;
-          super.onButtonClick(gameMessage.X as int);
-        } else {
-          playerType = Player.O;
-          super.onButtonClick(gameMessage.Y as int);
-        }
-      }
+//       togglePlayer();
+//       myTurn = true;
 
-      bool winners = super.checkWinner();
+//       notifyListeners();
+//     });
 
-      if (winners) {
-        myTurn = false;
-        showWinnerDialog = true;
-        playerType = myButtonType;
-      }
-      if (winner == ButtonType.none) {
-        incrementKey("tie");
-      } else if (winner ==
-          (myButtonType == Player.X ? ButtonType.X : ButtonType.O)) {
-        incrementKey("win");
-      } else {
-        incrementKey("lose");
-      }
-      notifyListeners();
-    });
+//     socket.on("winner", (data) {
+//       WinnerMessage gameMessage = WinnerMessage.fromJson(data);
+//       if (myButtonType == gameMessage.whoStarted) {
+//         didIStartFirst = true;
+//       } else {
+//         didIStartFirst = false;
+//       }
+//       if (gameMessage.winner == "X") {
+//         playerType = Player.X;
+//         if (myButtonType != Player.X) {
+//           super.onButtonClick(gameMessage.X as int);
+//           didIWIn = false;
+//         } else {
+//           didIWIn = true;
+//         }
+//       } else if (gameMessage.winner == "O") {
+//         playerType = Player.O;
+//         if (myButtonType != Player.O) {
+//           super.onButtonClick(gameMessage.Y as int);
+//           didIWIn = false;
+//         } else {
+//           didIWIn = true;
+//         }
+//       } else {
+//         if (gameMessage.X != null) {
+//           playerType = Player.X;
+//           super.onButtonClick(gameMessage.X as int);
+//         } else {
+//           playerType = Player.O;
+//           super.onButtonClick(gameMessage.Y as int);
+//         }
+//       }
 
-    socket.on("roomFull", (data) {
-      Message message = Message.fromJson(data);
-      showSnackBar(context, message.data);
-      changeGameState(GameState.idle);
-    });
-    socket.on("wrongRoom", (data) {
-      Message message = Message.fromJson(data);
-      showSnackBar(context, message.data);
-      changeGameState(GameState.idle);
-    });
+//       bool winners = super.checkWinner();
 
-    socket.on("playerLeft", (_) {
-      showWinnerDialog = false;
-      // showPlayerLeftDialog = true;
-      myTurnCopy = myTurn;
-      myTurn = false;
+//       if (winners) {
+//         myTurn = false;
+//         showWinnerDialog = true;
+//         playerType = myButtonType;
+//       }
+//       // if (winner == ButtonType.none) {
+//       //   incrementKey("tie");
+//       // } else if (winner ==
+//       //     (myButtonType == Player.X ? ButtonType.X : ButtonType.O)) {
+//       //   incrementKey("win");
+//       // } else {
+//       //   incrementKey("lose");
+//       // }
+//       notifyListeners();
+//     });
 
-      changeGameState(GameState.opponentLeft);
-    });
-    socket.on("next-round", (_) {
-      if (gameState == GameState.waitingForNextRoundAcceptance) {
-        playerType = myButtonType;
-        if (didIStartFirst) {
-          myTurn = false;
-        } else {
-          myTurn = true;
-        }
+//     socket.on("roomFull", (data) {
+//       Message message = Message.fromJson(data);
+//       showSnackBar(context, message.data);
+//       changeGameState(GameState.idle);
+//     });
+//     socket.on("wrongRoom", (data) {
+//       Message message = Message.fromJson(data);
+//       showSnackBar(context, message.data);
+//       changeGameState(GameState.idle);
+//     });
 
-        opponentWantsToPlayAgain = false;
-        changeGameState(GameState.playing);
-      } else {
-        opponentWantsToPlayAgain = true;
-      }
-      notifyListeners();
-    });
-    socket.on("quit", (data) {
-      changeGameState(GameState.opponentQuit);
-    });
-  }
+//     socket.on("playerLeft", (_) {
+//       showWinnerDialog = false;
+//       // showPlayerLeftDialog = true;
+//       myTurnCopy = myTurn;
+//       myTurn = false;
 
-  void disconnectSocket() {
-    socket.disconnect();
-  }
+//       changeGameState(GameState.opponentLeft);
+//     });
+//     socket.on("next-round", (_) {
+//       if (gameState == GameState.waitingForNextRoundAcceptance) {
+//         playerType = myButtonType;
+//         if (didIStartFirst) {
+//           myTurn = false;
+//         } else {
+//           myTurn = true;
+//         }
 
-  void createGame() {
-    if (!connected) {
-      showSnackBar(
-          context, "Unable to connect server. Please try again later.");
-      return;
-    }
-    if (_gameState != GameState.idle) return;
-    changeGameState(GameState.creating);
-    socket.emit("createGame", {"name": "Bharath"});
-  }
+//         opponentWantsToPlayAgain = false;
+//         changeGameState(GameState.playing);
+//       } else {
+//         opponentWantsToPlayAgain = true;
+//       }
+//       notifyListeners();
+//     });
+//     socket.on("quit", (data) {
+//       changeGameState(GameState.opponentQuit);
+//     });
+//   }
 
-  void joinGame(String roomName) {
-    if (!connected) {
-      showSnackBar(
-          context, "Unable to connect server. Please try again later.");
-      return;
-    }
-    if (_gameState != GameState.idle) return;
-    changeGameState(GameState.joining);
-    socket.emit("joinGame", {"player2": myName, "room": roomName});
-  }
+//   void disconnectSocket() {
+//     // socket.disconnect();
+//     print("Exit");
+//   }
 
-  void waitForPlayer() {
-    // showPlayerLeftDialog = false;
+//   void createGame() {
+//     if (!connected) {
+//       showSnackBar(
+//           context, "Unable to connect server. Please try again later.");
+//       return;
+//     }
+//     if (_gameState != GameState.idle) return;
+//     changeGameState(GameState.creating);
+//     socket.emit("createGame", {"shortLink": true});
+//   }
 
-    changeGameState(GameState.waitingForPlayerToJoinAgain);
-  }
+//   void joinGame(String roomName) {
+//     if (!connected) {
+//       showSnackBar(
+//           context, "Unable to connect server. Please try again later.");
+//       return;
+//     }
+//     if (_gameState != GameState.idle) return;
+//     changeGameState(GameState.joining);
+//     socket.emit("joinGame", {"player2": myName, "room": roomName});
+//   }
 
-  void changeModelToTrue() {
-    winnerDialogAlreadyShown = true;
-  }
+//   void waitForPlayer() {
+//     // showPlayerLeftDialog = false;
 
-  void changeModelToFalse() {
-    winnerDialogAlreadyShown = false;
-  }
+//     changeGameState(GameState.waitingForPlayerToJoinAgain);
+//   }
 
-  @override
-  bool onButtonClick(int id) {
-    if (winner != null) {
-      showWinnerDialog = true;
-      notifyListeners();
-      return false;
-    }
+//   void changeModelToTrue() {
+//     winnerDialogAlreadyShown = true;
+//   }
 
-    bool isChanged = false;
-    if (!myTurn) return isChanged;
-    playerType = myButtonType;
-    isChanged = super.onButtonClick(id);
+//   void changeModelToFalse() {
+//     winnerDialogAlreadyShown = false;
+//   }
 
-    if (!isChanged) return isChanged;
+//   @override
+//   bool onButtonClick(int id) {
+//     if (winner != null) {
+//       showWinnerDialog = true;
+//       notifyListeners();
+//       return false;
+//     }
 
-    String myButton = (myButtonType == Player.X) ? "X" : "Y";
-    List<String> xList = xButtons.map((e) => "0${e.toString()}").toList();
-    List<String> oList = oButtons.map((e) => "0${e.toString()}").toList();
-    socket.emit("game",
-        {"room": room, myButton: "0$id", "xList": xList, "oList": oList});
-    myTurn = false;
-    notifyListeners();
+//     bool isChanged = false;
+//     if (!myTurn) return isChanged;
+//     playerType = myButtonType;
+//     isChanged = super.onButtonClick(id);
 
-    return isChanged;
-  }
+//     if (!isChanged) return isChanged;
 
-  @override
-  void resetGame() {
-    super.resetGame();
-    if (!opponentWantsToPlayAgain) {
-      myTurn = false;
-      changeGameState(GameState.waitingForNextRoundAcceptance);
-    } else {
-      opponentWantsToPlayAgain = false;
-      playerType = myButtonType;
-      if (didIStartFirst) {
-        myTurn = false;
-      } else {
-        myTurn = true;
-      }
-      changeGameState(GameState.playing);
-    }
-    socket.emit("next-round", {"room": room});
-    changeModelToFalse();
+//     String myButton = (myButtonType == Player.X) ? "X" : "Y";
+//     List<String> xList = xButtons.map((e) => "0${e.toString()}").toList();
+//     List<String> oList = oButtons.map((e) => "0${e.toString()}").toList();
+//     socket.emit("game",
+//         {"room": room, myButton: "0$id", "xList": xList, "oList": oList});
+//     myTurn = false;
+//     notifyListeners();
 
-    notifyListeners();
-  }
+//     return isChanged;
+//   }
 
-  get gameState {
-    return _gameState;
-  }
+//   @override
+//   void resetGame() {
+//     super.resetGame();
+//     if (!opponentWantsToPlayAgain) {
+//       myTurn = false;
+//       changeGameState(GameState.waitingForNextRoundAcceptance);
+//     } else {
+//       opponentWantsToPlayAgain = false;
+//       playerType = myButtonType;
+//       if (didIStartFirst) {
+//         myTurn = false;
+//       } else {
+//         myTurn = true;
+//       }
+//       changeGameState(GameState.playing);
+//     }
+//     socket.emit("next-round", {"room": room});
+//     changeModelToFalse();
 
-  GameState changeGameState(GameState gameState) {
-    _gameState = gameState;
-    // print(_gameState);
-    notifyListeners();
-    return _gameState;
-  }
+//     notifyListeners();
+//   }
 
-  void quitGame() {
-    socket.emit("quit", {"room": room});
-    Navigator.of(context).popUntil(ModalRoute.withName('/playOnline'));
+//   get gameState {
+//     return _gameState;
+//   }
 
-    super.resetGame();
-    super.completeReset();
+//   GameState changeGameState(GameState gameState) {
+//     _gameState = gameState;
+//     // print(_gameState);
+//     notifyListeners();
+//     return _gameState;
+//   }
 
-    // this scope variables reset
-    room = null;
-    opponentName = "Opponent";
+//   void quitGame() {
+//     socket.emit("quit", {"room": room});
+//     Navigator.of(context).popUntil(ModalRoute.withName('/playOnline'));
 
-    iAmPlayer1 = true;
-    myButtonType = Player.X;
-    didIWIn = false;
-    didIStartFirst = false;
-    myTurnCopy = false;
-    opponentWantsToPlayAgain = false;
-    winnerDialogAlreadyShown = false;
+//     super.resetGame();
+//     super.completeReset();
 
-    changeGameState(GameState.idle);
-  }
-}
+//     // this scope variables reset
+//     room = null;
+//     opponentName = "Opponent";
+
+//     iAmPlayer1 = true;
+//     myButtonType = Player.X;
+//     didIWIn = false;
+//     didIStartFirst = false;
+//     myTurnCopy = false;
+//     opponentWantsToPlayAgain = false;
+//     winnerDialogAlreadyShown = false;
+
+//     changeGameState(GameState.idle);
+//   }
+// }

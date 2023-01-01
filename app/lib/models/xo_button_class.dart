@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
-
-import '../utilities/utlility.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 
 class XOButtonProvider with ChangeNotifier {
   int id;

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tic_tac_toe/models/user_model.dart';
 import 'package:tic_tac_toe/providers/global_provider.dart';
 import 'package:tic_tac_toe/providers/play_online_provider.dart';
+import 'package:tic_tac_toe/providers/play_online_provider_renewed.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/utilities/show_snackbar.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
 import 'package:tic_tac_toe/widgets/buttons/submit_button.dart';
@@ -21,9 +24,8 @@ class _OnlinePlayWelcomeWidgetState extends State<OnlinePlayWelcomeWidget> {
   final TextEditingController roomTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final LocalStorageProvider storageProvider =
-        Provider.of<LocalStorageProvider>(context, listen: false);
-
+    PublicUserData myData =
+        Provider.of<GlobalProvider>(context).userData!.getPublicData;
     return Scaffold(
       appBar: AppBar(
         title: const CenterAppIcon(),
@@ -31,7 +33,7 @@ class _OnlinePlayWelcomeWidgetState extends State<OnlinePlayWelcomeWidget> {
       ),
       body: ChangeNotifierProvider(
           create: (context) =>
-              PlayOnlineProvider(context: context, storage: storageProvider),
+              PlayOnlineProvider(context: context, myDetails: myData),
           child: Consumer<PlayOnlineProvider>(builder: (_, provider, __) {
             return WillPopScope(
               onWillPop: () {

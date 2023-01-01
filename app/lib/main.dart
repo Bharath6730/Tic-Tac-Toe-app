@@ -3,23 +3,22 @@ import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/providers/global_provider.dart';
 import 'package:tic_tac_toe/router.dart' as router;
 
-LocalStorageProvider _sp = LocalStorageProvider();
+GlobalProvider _gb = GlobalProvider();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await _sp.initaliaze();
+  await _gb.initialize();
   runApp(const MyApp());
 }
-// TODO : Refactor all the repeated code.
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<LocalStorageProvider>.value(
-      value: _sp,
+    return ChangeNotifierProvider<GlobalProvider>.value(
+      value: _gb,
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
+          title: 'Tic Tac Toe App',
           theme: ThemeData(
               fontFamily: "Outfit",
               appBarTheme: const AppBarTheme(
@@ -39,8 +38,13 @@ class MyApp extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                       fontSize: 16,
                       color: Colors.black))),
-          initialRoute: "/",
+          initialRoute: getInitialRoute(),
           onGenerateRoute: router.generateRoute),
     );
   }
+}
+
+String getInitialRoute() {
+  if (_gb.isUserLoggedIn == true) return "/home";
+  return "/login";
 }

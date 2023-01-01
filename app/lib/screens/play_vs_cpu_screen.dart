@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/providers/global_provider.dart';
 import 'package:tic_tac_toe/providers/play_vs_cpu_provider.dart';
 import 'package:tic_tac_toe/utilities/dialog_animater.dart';
-import 'package:tic_tac_toe/utilities/utlility.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/widgets/dialogs/pop_with_dialog.dart';
 import 'package:tic_tac_toe/widgets/dialogs/restart_dialog.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/center_app_icon.dart';
@@ -19,13 +19,14 @@ class PlayVsCPUScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final Player selectedPlayer =
         ModalRoute.of(context)?.settings.arguments as Player;
-    final LocalStorageProvider storageProvider =
-        Provider.of<LocalStorageProvider>(context, listen: false);
+    final GlobalProvider storageProvider =
+        Provider.of<GlobalProvider>(context, listen: false);
 
     return PopWithDialog(
       child: ChangeNotifierProvider(
-        create: (context) =>
-            PlayVsCPUProvider(player: selectedPlayer, storage: storageProvider),
+        create: (context) => PlayVsCPUProvider(
+          player: selectedPlayer,
+        ),
         child: Scaffold(
           appBar: AppBar(
             title: const CenterAppIcon(),
@@ -39,7 +40,7 @@ class PlayVsCPUScreen extends StatelessWidget {
                     context: context,
                     dialog: WinnerDialog(
                       resetGame: value.resetGame,
-                      winner: value.winner as ButtonType,
+                      winner: value.winner,
                       winnerText: value.didIWin ? "You Won!" : "CPU Wins!",
                       returnFunction: () {
                         Navigator.of(context).pop("cancel");

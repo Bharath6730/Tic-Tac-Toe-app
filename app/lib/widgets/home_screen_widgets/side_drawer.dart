@@ -11,7 +11,7 @@ class SideDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? name = Provider.of<LocalStorageProvider>(context).userName;
+    String name = Provider.of<GlobalProvider>(context).userData!.name;
     return Drawer(
       backgroundColor: AppTheme.dialogColor,
       child: Column(children: [
@@ -24,7 +24,7 @@ class SideDrawer extends StatelessWidget {
           height: 15,
         ),
         Center(
-          child: Text(name ?? "",
+          child: Text(name,
               style: Theme.of(context)
                   .textTheme
                   .bodyLarge

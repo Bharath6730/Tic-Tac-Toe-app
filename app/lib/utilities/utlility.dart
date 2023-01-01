@@ -1,23 +1,5 @@
 import 'package:flutter/material.dart';
-
-enum GameMode { passAndPlay, playVsCPU, playOnline }
-
-enum ButtonType { X, O, none }
-
-enum Player { X, O }
-
-enum GameState {
-  idle,
-  creating,
-  joining,
-  playing,
-  waitingForPlayerToJoin,
-  opponentLeft,
-  waitingForPlayerToJoinAgain,
-  waitingForNextRoundAcceptance,
-  opponentQuit
-}
-
+import 'package:tic_tac_toe/utilities/enums.dart';
 
 String getAssetLink(ButtonType buttonType) {
   if (buttonType == ButtonType.none) return "";

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:tic_tac_toe/providers/play_online_provider.dart';
+import 'package:tic_tac_toe/providers/play_online_provider_renewed.dart';
+
 import 'package:tic_tac_toe/utilities/dialog_animater.dart';
-import 'package:tic_tac_toe/utilities/utlility.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/widgets/dialogs/pop_with_dialog.dart';
 import 'package:tic_tac_toe/widgets/playOnline/black_center_button.dart';
 import 'package:tic_tac_toe/widgets/main_widgets/center_app_icon.dart';
@@ -28,9 +29,10 @@ class PlayOnlineScreen extends StatelessWidget {
               dialog: OnlinePlayWinnerDialog(
                 resetGame: value.resetGame,
                 returnFunction: value.quitGame,
-                winner: value.winner as ButtonType,
-                winnerText:
-                    value.didIWIn ? "You Won!" : "${value.opponentName} Wins!",
+                winner: value.winner,
+                winnerText: value.didIWIn
+                    ? "You Won!"
+                    : "${value.opponentDetails.name} Wins!",
                 provider: value,
               ),
             );
@@ -53,12 +55,12 @@ class PlayOnlineScreen extends StatelessWidget {
 
         String announcementText(GameState gameState) {
           if (gameState == GameState.waitingForPlayerToJoin) {
-            return "Hey, ${value.myName}. Please ask your friend to enter Game ID: ${value.room}. Waiting for player 2...";
+            return "Hey, ${value.myDetails.name}. Please ask your friend to enter Game ID: ${value.room}. Waiting for player 2...";
           } else if (value.gameState == GameState.waitingForPlayerToJoinAgain) {
             return "Waiting for Opponent to connect again.. Room Id : ${value.room}";
           } else if (value.gameState ==
               GameState.waitingForNextRoundAcceptance) {
-            return "Waiting for ${value.opponentName} to accept play again.";
+            return "Waiting for ${value.opponentDetails.name} to accept play again.";
           }
           return "";
         }
@@ -101,10 +103,9 @@ class PlayOnlineScreen extends StatelessWidget {
                       oWinCount: value.oWinCount,
                       tiesCount: value.tiesCount,
                       xCustomName:
-                          value.iAmPlayer1 ? "You" : value.opponentName,
+                          value.iAmPlayer1 ? "You" : value.opponentDetails.name,
                       oCustomName:
-                          value.iAmPlayer1 ? value.opponentName : "You",
-                      // onlyName: true,
+                          value.iAmPlayer1 ? value.opponentDetails.name : "You",
                     ),
                   ]))),
         );

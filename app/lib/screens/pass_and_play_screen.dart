@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/providers/global_provider.dart';
 import 'package:tic_tac_toe/providers/pass_and_play_provider.dart';
+import 'package:tic_tac_toe/services/socket_service.dart';
 import 'package:tic_tac_toe/utilities/dialog_animater.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
 import 'package:tic_tac_toe/widgets/dialogs/model_widget.dart';
 import 'package:tic_tac_toe/widgets/dialogs/pop_with_dialog.dart';
@@ -21,12 +23,13 @@ class PassAndPlayScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Player player = ModalRoute.of(context)?.settings.arguments as Player;
-    final LocalStorageProvider storageProvider =
-        Provider.of<LocalStorageProvider>(context, listen: false);
+    final GlobalProvider storageProvider =
+        Provider.of<GlobalProvider>(context, listen: false);
     return PopWithDialog(
         child: ChangeNotifierProvider(
-      create: (context) =>
-          PassAndPlayProvider(playerType: player, storage: storageProvider),
+      create: (context) => PassAndPlayProvider(
+        playerType: player,
+      ),
       child: Scaffold(
         appBar: AppBar(
           title: const CenterAppIcon(),
@@ -46,7 +49,7 @@ class PassAndPlayScreen extends StatelessWidget {
                           Navigator.of(context).pop();
                         }
                       },
-                      winner: value.winner as ButtonType,
+                      winner: value.winner,
                       winnerText: "You Won!",
                     ));
               });

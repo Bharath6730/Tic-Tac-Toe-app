@@ -33,6 +33,6 @@ export default async function joinGame(
     console.log("Player1Data" + gameData.player1.username)
     gameData.player2 = socket.user
     await setGameData(gameData)
-
+    console.log(gameData)
     io.to(room).emit("startGame", gameData)
 }

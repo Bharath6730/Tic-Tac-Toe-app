@@ -11,9 +11,13 @@ export default async (io: Server, socket: customSocket) => {
     // change user status for both the players
     // Destroy gameData on Redis
     await Promise.all([
-        setUserStatus(gameData.player1.publicId, userStatus.online),
-        setUserStatus(gameData.player2.publicId, userStatus.online),
-        redis.del(gameData.gameRoom),
+        gameData.player1?.publicId !== undefined
+            ? setUserStatus(gameData.player1.publicId, userStatus.online)
+            : Promise.resolve(),
+        gameData.player2?.publicId !== undefined
+            ? setUserStatus(gameData.player2.publicId, userStatus.online)
+            : Promise.resolve(),
+        redis.del(`game:${gameData.gameRoom}`),
     ])
 
     socket.broadcast.to(gameData.gameRoom).emit("quit")

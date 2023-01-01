@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:tic_tac_toe/utilities/utlility.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 import './../models/logic_provider.dart';
 
 class PassAndPlayProvider extends LogicProvider with ChangeNotifier {
-  PassAndPlayProvider({required playerType, required super.storage})
-      : super(
+  PassAndPlayProvider({
+    required playerType,
+  }) : super(
           gameMode: GameMode.passAndPlay,
         ) {
     this.playerType = playerType;
@@ -12,7 +13,7 @@ class PassAndPlayProvider extends LogicProvider with ChangeNotifier {
 
   @override
   bool onButtonClick(int id) {
-    if (winner != null) {
+    if (winner != WinnerType.none) {
       showWinnerDialog = true;
       notifyListeners();
       return false;
@@ -56,8 +57,8 @@ class PassAndPlayProvider extends LogicProvider with ChangeNotifier {
         togglePlayer();
       }
     }
-    if (winner != null) {
-      incrementKey("games");
+    if (winner != WinnerType.none) {
+      // incrementKey("games");
     }
   }
 }

@@ -1,6 +1,6 @@
 import redis from "./../redis"
 import { userData, userStatus } from "userGameData"
-import { Game } from "gametypes"
+import Game from "./../models/gameMode"
 
 export async function setUserStatus(
     publicId: string,
@@ -31,4 +31,5 @@ export async function getGameData(room: string) {
 export async function setGameData(game: Game) {
     const gameString = JSON.stringify(game)
     await redis.set(`game:${game.gameRoom}`, gameString)
+    return
 }

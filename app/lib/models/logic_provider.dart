@@ -1,18 +1,16 @@
-import 'package:tic_tac_toe/providers/global_provider.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 
-import '../utilities/utlility.dart';
 import 'xo_button_class.dart';
 
 class LogicProvider {
-  final LocalStorageProvider storage;
   final GameMode gameMode;
   late String gameModeStr;
 
-  LogicProvider({required this.storage, required this.gameMode}) {
+  LogicProvider({required this.gameMode}) {
     gameModeStr = gameMode.toString().replaceAll("GameMode.", "");
   }
 
-  ButtonType? winner;
+  WinnerType winner = WinnerType.none;
 
   Player playerType = Player.X;
   bool myTurn = true;
@@ -92,10 +90,10 @@ class LogicProvider {
         answerList = winList;
 
         if (playerType == Player.X) {
-          winner = ButtonType.X;
+          winner = WinnerType.X;
           xWinCount += 1;
         } else {
-          winner = ButtonType.O;
+          winner = WinnerType.O;
           oWinCount += 1;
         }
 
@@ -111,7 +109,7 @@ class LogicProvider {
       }
     } else {
       if (xButtons.length + oButtons.length == 9) {
-        winner = ButtonType.none;
+        winner = WinnerType.draw;
         showWinnerDialog = true;
         tiesCount = tiesCount + 1;
         return ans;
@@ -133,7 +131,7 @@ class LogicProvider {
 
     myTurn = true;
     showWinnerDialog = false;
-    winner = null;
+    winner = WinnerType.none;
 
     xButtons = [];
     oButtons = [];
@@ -151,13 +149,5 @@ class LogicProvider {
     } else {
       playerType = Player.X;
     }
-  }
-
-  void incrementKey(String key) {
-    key = gameModeStr + key;
-
-    int previousValue = storage.getInstance().getInt(key) ?? 0;
-    storage.getInstance().setInt(key, previousValue + 1);
-    print("$key : ${previousValue + 1}");
   }
 }

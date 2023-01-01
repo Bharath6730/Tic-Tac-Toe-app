@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:tic_tac_toe/screens/home_screen.dart';
+import 'package:tic_tac_toe/screens/login_screen.dart';
 import 'package:tic_tac_toe/screens/pass_and_play_screen.dart';
 import 'package:tic_tac_toe/screens/play_online_screen.dart';
 import 'package:tic_tac_toe/screens/play_vs_cpu_screen.dart';
@@ -8,7 +9,11 @@ import 'package:tic_tac_toe/widgets/playOnline/welcome_widget.dart';
 
 Route<dynamic>? generateRoute(RouteSettings settings) {
   switch (settings.name) {
-    case "/":
+    case "/login":
+      {
+        return animatedPage(const LoginScreen(), settings);
+      }
+    case "/home":
       {
         return animatedPage(const HomeScreen(), settings);
       }

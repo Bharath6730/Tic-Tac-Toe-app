@@ -1,48 +1,32 @@
 // import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tic_tac_toe/models/user_model.dart';
+import 'package:tic_tac_toe/services/local_storage_service.dart';
 
-class LocalStorageProvider with ChangeNotifier {
-  late SharedPreferences _sp;
-  String? userName;
+class GlobalProvider with ChangeNotifier {
+  final LocalStorageService _storageService = LocalStorageService();
+  late bool isUserLoggedIn;
+  PersonalData? userData;
 
-  Future<bool>? setUserName(String name) {
-    Future<bool>? valueSet = _sp.setString("userName", name);
-    userName = name;
-    notifyListeners();
-    return valueSet;
-  }
-
-  bool isUserNameNull() {
-    if (userName != null) return true;
-    return false;
-  }
-
-  bool checkUserNameSet() {
-    if (userName != null) return true;
-    notifyListeners();
-    return false;
-  }
-
-  Future initaliaze() async {
-    _sp = await SharedPreferences.getInstance();
-    userName = _sp.getString("userName");
+  Future initialize() async {
+    // await _storageService.getSecureInstance.deleteAll();
+    isUserLoggedIn = await _storageService.getSecuredBool("isLoggedIn");
+    if (isUserLoggedIn) {
+      PersonalData? user = await _storageService.getUserData();
+      if (user == null) {
+        isUserLoggedIn == false;
+      } else {
+        userData = user;
+      }
+    }
     return Future.value(true);
   }
 
-  SharedPreferences getInstance() {
-    return _sp;
-  }
-
-  String? getString(String key) {
-    return _sp.getString(key);
-  }
-
-  Future<bool>? setString(String key, String value) {
-    return _sp.setString(key, value);
-  }
-
-  Future<bool>? deleteWithKey(String key) {
-    return _sp.remove(key);
+  Future<bool> setUserData(PersonalData myData) async {
+    await _storageService.setUserData(myData);
+    userData = myData;
+    print(myData);
+    notifyListeners();
+    return Future.value(true);
   }
 }

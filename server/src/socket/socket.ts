@@ -17,9 +17,12 @@ import quitGame from "./controllers/quitGame"
 import handleDisconnect from "./controllers/handleDisconnect"
 
 io.on("connection", async (socket: customSocket) => {
-    // console.log(socket.user)
+    console.log(socket.user)
     // var myPrivateRoom = io.sockets.adapter.rooms.get(socket.user.publicId)
     // console.log(myPrivateRoom.size)
+    socket.emit("test", {
+        message: "You are awesome",
+    })
 
     socket.on("createGame", (data) => createGame(socket, data))
     socket.on("joinGame", (data) => joinGame(socket, io, data))
