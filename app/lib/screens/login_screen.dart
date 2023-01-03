@@ -100,15 +100,12 @@ class LoginScreen extends StatelessWidget {
 
             if (response.statusCode != 200) {
               showSnackBarHere(response.body);
-              print(response.body);
               return;
             }
             Map<String, dynamic> responseBody = jsonDecode(response.body);
-            print(responseBody);
 
             PersonalData myData = PersonalData.fromJson(
                 Map<String, String>.from(responseBody['data']));
-            print(myData);
             await provider.setUserData(myData);
             navigateToHomeScreen();
           },

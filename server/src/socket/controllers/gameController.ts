@@ -17,6 +17,9 @@ export default async (socket: customSocket, data: any) => {
     const amIPlayer1 = gameData.player1.publicId === socket.user.publicId
     const myType = amIPlayer1 ? gameData.p1Type : gameData.p2Type
 
+    if (gameData.xList.length === 0 && gameData.oList.length === 0) {
+        gameData.whoStartedFirst = gameData.whoseTurn
+    }
     if (myType == PlayerType.X) {
         gameData.xList.push(move)
     } else {
@@ -26,14 +29,19 @@ export default async (socket: customSocket, data: any) => {
     const winner = gameData.checkWinner(myType)
 
     // Change whoseTurn and save gameData
-    gameData.whoseTurn = amIPlayer1
-        ? gameData.player2.publicId
-        : gameData.player1.publicId
-
+    if (winner) {
+        gameData.whoseTurn = "none"
+    } else {
+        gameData.whoseTurn = amIPlayer1
+            ? gameData.player2.publicId
+            : gameData.player1.publicId
+    }
     await setGameData(gameData)
 
     if (winner) {
-        io.to(gameData.gameRoom).emit("winner", gameData)
+        let gameCopy: any = { ...gameData }
+        gameCopy.move = move
+        io.to(gameData.gameRoom).emit("winner", gameCopy)
     } else {
         const newMove = {
             move,

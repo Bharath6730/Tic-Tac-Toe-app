@@ -260,19 +260,19 @@
 //       changeGameState(GameState.opponentLeft);
 //     });
 //     socket.on("next-round", (_) {
-//       if (gameState == GameState.waitingForNextRoundAcceptance) {
-//         playerType = myButtonType;
-//         if (didIStartFirst) {
-//           myTurn = false;
-//         } else {
-//           myTurn = true;
-//         }
+      // if (gameState == GameState.waitingForNextRoundAcceptance) {
+      //   playerType = myButtonType;
+      //   if (didIStartFirst) {
+      //     myTurn = false;
+      //   } else {
+      //     myTurn = true;
+      //   }
 
-//         opponentWantsToPlayAgain = false;
-//         changeGameState(GameState.playing);
-//       } else {
-//         opponentWantsToPlayAgain = true;
-//       }
+      //   opponentWantsToPlayAgain = false;
+      //   changeGameState(GameState.playing);
+      // } else {
+      //   opponentWantsToPlayAgain = true;
+      // }
 //       notifyListeners();
 //     });
 //     socket.on("quit", (data) {

@@ -30,7 +30,7 @@ class PlayOnlineScreen extends StatelessWidget {
                 resetGame: value.resetGame,
                 returnFunction: value.quitGame,
                 winner: value.winner,
-                winnerText: value.didIWIn
+                winnerText: value.amiWinner()
                     ? "You Won!"
                     : "${value.opponentDetails.name} Wins!",
                 provider: value,
@@ -45,28 +45,21 @@ class PlayOnlineScreen extends StatelessWidget {
             dialogManager(value, context);
           });
         }
-
-        bool showRoomAnouncement(GameState gameState) {
-          if (gameState == GameState.waitingForNextRoundAcceptance ||
-              gameState == GameState.waitingForPlayerToJoin ||
-              gameState == GameState.waitingForPlayerToJoinAgain) return true;
-          return false;
-        }
-
         String announcementText(GameState gameState) {
           if (gameState == GameState.waitingForPlayerToJoin) {
             return "Hey, ${value.myDetails.name}. Please ask your friend to enter Game ID: ${value.room}. Waiting for player 2...";
-          } else if (value.gameState == GameState.waitingForPlayerToJoinAgain) {
+          } else if (gameState == GameState.waitingForPlayerToJoinAgain) {
             return "Waiting for Opponent to connect again.. Room Id : ${value.room}";
-          } else if (value.gameState ==
-              GameState.waitingForNextRoundAcceptance) {
+          } else if (gameState == GameState.waitingForNextRoundAcceptance) {
             return "Waiting for ${value.opponentDetails.name} to accept play again.";
           }
           return "";
         }
 
         return PopWithDialog(
-          content: "This action declares the opponent as winner.",
+          content: value.gameState == GameState.playing
+              ? "This action declares the opponent as winner."
+              : "Do you really want to quit?",
           quitTitle: "Quit",
           quitFunction: value.quitGame,
           child: Scaffold(
@@ -112,4 +105,11 @@ class PlayOnlineScreen extends StatelessWidget {
       }),
     );
   }
+}
+
+bool showRoomAnouncement(GameState gameState) {
+  if (gameState == GameState.waitingForNextRoundAcceptance ||
+      gameState == GameState.waitingForPlayerToJoin ||
+      gameState == GameState.waitingForPlayerToJoinAgain) return true;
+  return false;
 }

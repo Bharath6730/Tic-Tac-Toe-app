@@ -45,12 +45,5 @@ class SocketService {
       connected = false;
       _connectionStatusStream.add(false);
     });
-
-    // TODO create a new file for play Online Provider
-
-    // _socket.on("gameCreated", (data) {
-    //   print(data);
-    //   print(data['room']);
-    // });
   }
 }

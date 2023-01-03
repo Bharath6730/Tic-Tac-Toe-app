@@ -36,7 +36,7 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
       }
 
     default:
-      return null;
+      return animatedPage(const HomeScreen(), settings);
   }
 }
 

@@ -14,25 +14,38 @@ export default async function joinGame(
 ) {
     const room = data.room
     if (!room) {
-        return socket.emit("gameError", { data: "Invalid room code!" })
+        return socket.emit("invalidRoom", { message: "Invalid room code!" })
     }
     if (io.sockets.adapter.rooms.get(room) == undefined) {
-        return socket.emit("gameError", { data: "Invalid room code!" })
+        return socket.emit("invalidRoom", { message: "Invalid room code!" })
     }
     if (io.sockets.adapter.rooms.get(room).size >= 2) {
-        return socket.emit("gameError", { data: "Room Full" })
+        return socket.emit("invalidRoom", { message: "Room Full" })
     }
+
+    let gameData = await getGameData(room)
+
+    if (gameData.player2 === undefined) {
+        //Player 2  Joins at start
+        let player2 = gameData.player2
+        gameData.player2 = socket.user
+    } else {
+        if (
+            !(
+                socket.user.publicId === gameData.player1.publicId ||
+                socket.user.publicId === gameData.player2.publicId
+            )
+        )
+            return socket.emit("invalidRoom", { message: "Room Reserved!" })
+    }
+
     socket.join(room)
     socket.gameRoom = room
 
-    const [_, gameData] = await Promise.all([
+    await Promise.all([
         setUserStatus(socket.user.publicId, userStatus.playing, room),
-        getGameData(room),
+        setGameData(gameData),
     ])
 
-    console.log("Player1Data" + gameData.player1.username)
-    gameData.player2 = socket.user
-    await setGameData(gameData)
-    console.log(gameData)
     io.to(room).emit("startGame", gameData)
 }

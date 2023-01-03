@@ -42,9 +42,7 @@ class HomeScreen extends StatelessWidget {
     // super.build(context);
     GlobalProvider globalProvider = Provider.of<GlobalProvider>(context);
 
-    String myName = globalProvider.userData!.name;
     String token = globalProvider.userData!.token;
-    print("TOken : $token");
     final SocketService socketService = SocketService();
     socketService.init(token);
 

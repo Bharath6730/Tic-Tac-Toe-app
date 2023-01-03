@@ -1,6 +1,6 @@
 import redis from "./../redis"
 import { userData, userStatus } from "userGameData"
-import Game from "./../models/gameMode"
+import Game from "../models/gameModel"
 
 export async function setUserStatus(
     publicId: string,
@@ -24,7 +24,7 @@ export async function getUserStatus(publicId: string) {
 
 export async function getGameData(room: string) {
     const gameString = await redis.get(`game:${room}`)
-    const game: Game = JSON.parse(gameString)
+    const game: Game = Game.fromJson(JSON.parse(gameString))
     return game
 }
 

@@ -1,12 +1,12 @@
 import { publicUserData } from "customSocket"
-import { PlayerType, WinnerType } from "gametypes"
+import { PlayerType, WinnerType } from "./../types/gametypes"
 
 export default class Game {
     gameRoom: string
     player1: publicUserData
     player2: publicUserData
-    p1Type: PlayerType
-    p2Type: PlayerType
+    p1Type: PlayerType = PlayerType.X
+    p2Type: PlayerType = PlayerType.O
     whoseTurn: string
     winner: WinnerType = WinnerType.None
     totalGames: number = 0
@@ -14,6 +14,9 @@ export default class Game {
     player1WinCount: number = 0
     xList: Array<number> = []
     oList: Array<number> = []
+    nextRoundOffer: String = "none"
+    whoStartedFirst: String
+    flaggedToDelete: boolean = false
 
     constructor(room: string, p1: publicUserData) {
         this.gameRoom = room
@@ -37,26 +40,27 @@ export default class Game {
 
         if (this.xList.length < 3 && this.oList.length < 3) return winnerExists
 
-        const currentPlayerList = PlayerType.X ? this.xList : this.oList
+        const currentPlayerList =
+            PlayerType.X == currentPlayer ? this.xList : this.oList
+        console.log("Current List" + currentPlayerList)
 
-        currentPlayerList.forEach((element) => {
-            winningPossibilities.forEach((winningCase) => {
-                var count = 0
-                if (winningCase.includes(element)) {
+        for (const winningCase of winningPossibilities) {
+            var count = 0
+            winningCase.forEach((winButton) => {
+                if (currentPlayerList.includes(winButton)) {
                     count++
                 }
-                if (count === 3) {
-                    winnerExists = true
-                    this.winner =
-                        currentPlayer == PlayerType.X
-                            ? WinnerType.X
-                            : WinnerType.O
-
-                    this.incrementWinnerCount()
-                    return winnerExists
-                }
             })
-        })
+            console.log(winningCase + " " + count)
+            if (count == 3) {
+                winnerExists = true
+                this.winner =
+                    currentPlayer == PlayerType.X ? WinnerType.X : WinnerType.O
+
+                this.incrementWinnerCount()
+                return winnerExists
+            }
+        }
 
         if (this.xList.length + this.oList.length === 9) {
             winnerExists = true
@@ -89,5 +93,11 @@ export default class Game {
         this.winner = WinnerType.None
         this.xList = []
         this.oList = []
+    }
+
+    static fromJson(json: any) {
+        let gameFromJson = new Game(json.room, json.player1)
+        Object.assign(gameFromJson, json)
+        return gameFromJson
     }
 }

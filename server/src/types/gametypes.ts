@@ -5,7 +5,7 @@ export enum WinnerType {
     None = "None",
 }
 
-export declare enum PlayerType {
-    X,
-    O,
+export enum PlayerType {
+    X = "X",
+    O = "O",
 }

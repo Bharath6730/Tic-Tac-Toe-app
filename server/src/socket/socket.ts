@@ -20,14 +20,10 @@ io.on("connection", async (socket: customSocket) => {
     console.log(socket.user)
     // var myPrivateRoom = io.sockets.adapter.rooms.get(socket.user.publicId)
     // console.log(myPrivateRoom.size)
-    socket.emit("test", {
-        message: "You are awesome",
-    })
-
     socket.on("createGame", (data) => createGame(socket, data))
     socket.on("joinGame", (data) => joinGame(socket, io, data))
     socket.on("game", (data) => gameController(socket, data))
-    socket.on("nextRound", (_) => nextRound(socket))
+    socket.on("nextRound", (_) => nextRound(io,socket))
     socket.on("quit", (_) => quitGame(io, socket))
     socket.on("disconnecting", (_) => handleDisconnect(io, socket))
 })

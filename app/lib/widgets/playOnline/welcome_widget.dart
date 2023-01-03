@@ -22,6 +22,14 @@ class OnlinePlayWelcomeWidget extends StatefulWidget {
 
 class _OnlinePlayWelcomeWidgetState extends State<OnlinePlayWelcomeWidget> {
   final TextEditingController roomTextController = TextEditingController();
+
+  @override
+  void dispose() {
+    roomTextController.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     PublicUserData myData =

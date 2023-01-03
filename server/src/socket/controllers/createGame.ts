@@ -1,11 +1,10 @@
-import redis from "./../../redis"
 import { v4 as uuidv4 } from "uuid"
 import randomString from "random-string-generator"
 
 import { userStatus } from "userGameData"
 import { customSocket } from "customSocket"
 import { setGameData, setUserStatus } from "./../../utilities/redisHelpers"
-import Game from "./../../models/gameMode"
+import Game from "../../models/gameModel"
 
 export default async (socket: customSocket, data: any) => {
     let room: string
