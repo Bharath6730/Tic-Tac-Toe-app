@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe/utilities/utlility.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/widgets/buttons/submit_button.dart';
 import 'package:tic_tac_toe/widgets/dialogs/dialog_container.dart';
 
@@ -54,10 +54,8 @@ class DialogFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
       SubmitButton(
-        backgroundColor: AppTheme.silverButtonColor,
-        shadowColor: AppTheme.silverShadowColor,
-        splashColor: AppTheme.silverHoverColor,
-        radius: 15,
+        boxColor: BoxColor.silver,
+        radius: 12,
         onPressed: onLeftButtonPress,
         child: Text(
           leftButtonTitle,
@@ -69,10 +67,8 @@ class DialogFooter extends StatelessWidget {
         ),
       ),
       SubmitButton(
-        backgroundColor: AppTheme.oButtonColor,
-        shadowColor: AppTheme.oShadowColor,
-        splashColor: AppTheme.oHoverColor,
-        radius: 15,
+        boxColor: BoxColor.yellow,
+        radius: 12,
         onPressed: onRightButtonPress,
         child: Text(
           rightButtonTitle,

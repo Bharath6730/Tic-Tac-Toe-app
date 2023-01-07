@@ -4,12 +4,12 @@ import 'dart:math' as math;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/providers/play_online_provider.dart';
-import 'package:tic_tac_toe/providers/play_online_provider_renewed.dart';
 import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
 import 'package:tic_tac_toe/widgets/buttons/submit_button.dart';
 import 'package:tic_tac_toe/widgets/dialogs/dialog_container.dart';
 import 'package:tic_tac_toe/widgets/dialogs/model_widget.dart';
+import 'package:tic_tac_toe/widgets/playOnline/score_board.dart';
 
 class OnlinePlayWinnerDialog extends StatefulWidget {
   final VoidCallback resetGame;
@@ -99,7 +99,7 @@ class _OnlinePlayModalWidgetState extends State<OnlinePlayWinnerDialog>
                         child: Transform.rotate(
                           angle: math.pi,
                           child: SvgPicture.asset(
-                            "assets/images/triangle2.svg",
+                            "assets/svg/game/triangle2.svg",
                             color: AppTheme.xbuttonColor,
                           ),
                         ),
@@ -146,6 +146,7 @@ class _OnlinePlayModalWidgetState extends State<OnlinePlayWinnerDialog>
     return ChangeNotifierProvider<PlayOnlineProvider>.value(
       value: widget.provider,
       child: DialogContainer(
+        gap: const [25, 0, 20],
         header: Text(headerTitle,
             style: const TextStyle(fontSize: 20, color: Colors.white),
             textAlign: TextAlign.center),
@@ -154,19 +155,19 @@ class _OnlinePlayModalWidgetState extends State<OnlinePlayWinnerDialog>
             showWinnerText(
                 itsADraw: itsADraw, winColor: winColor, winner: widget.winner),
             const SizedBox(
-              height: 30,
+              height: 10,
             ),
-            // TODO : Show Winner Footer here and show profile pics with name during game.
-            // Consumer<PlayOnlineProvider>(builder: (_, value, __) {
-            //   return GameFooter(
-            //     xWinCount: value.xWinCount,
-            //     oWinCount: value.oWinCount,
-            //     tiesCount: value.tiesCount,
-            //     xCustomName: value.iAmPlayer1 ? "You" : value.opponentName,
-            //     oCustomName: value.iAmPlayer1 ? value.opponentName : "You",
-            //     // onlyName: true,
-            //   );
-            // }),
+            Consumer<PlayOnlineProvider>(builder: (_, value, __) {
+              return ScoreBoard(
+                xWinCount: value.xWinCount,
+                oWinCount: value.oWinCount,
+                tiesCount: value.tiesCount,
+                playerXName:
+                    value.iAmPlayer1 ? "You" : value.opponentDetails.name,
+                playerOName:
+                    value.iAmPlayer1 ? value.opponentDetails.name : "You",
+              );
+            }),
           ],
         ),
         footer: Row(
@@ -208,9 +209,7 @@ class QuitButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SubmitButton(
-      backgroundColor: AppTheme.silverButtonColor,
-      shadowColor: AppTheme.silverShadowColor,
-      splashColor: AppTheme.silverHoverColor,
+      boxColor: BoxColor.silver,
       radius: 15,
       onPressed: onPressed,
       child: Text(
@@ -236,9 +235,7 @@ class NextRoundButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SubmitButton(
-      backgroundColor: AppTheme.oButtonColor,
-      shadowColor: AppTheme.oShadowColor,
-      splashColor: AppTheme.oHoverColor,
+      boxColor: BoxColor.yellow,
       radius: 15,
       onPressed: resetGame,
       child: Text(

@@ -51,7 +51,6 @@ class LocalStorageService {
 
   Future<bool> getSecuredBool(String key) async {
     var value = await _secureStorage.read(key: key);
-    print("ISUSerLoggedIn $value");
     if (value == null) return false;
     return value.toLowerCase() == 'true';
   }
@@ -80,8 +79,6 @@ class LocalStorageService {
   }
 
   Future<bool> setUserData(PersonalData myData) async {
-    print("Name ib side ${myData.name}");
-    print(myData.token);
     await _secureStorage.write(key: "isLoggedIn", value: "true");
     await _secureStorage.write(key: "userName", value: myData.name);
     await _secureStorage.write(key: "email", value: myData.email);

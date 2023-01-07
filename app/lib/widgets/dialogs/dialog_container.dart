@@ -5,13 +5,15 @@ class DialogContainer extends StatelessWidget {
   final Widget header;
   final Widget body;
   final Widget footer;
-  const DialogContainer({
-    Key? key,
-    this.child,
-    required this.header,
-    required this.body,
-    required this.footer,
-  }) : super(key: key);
+  final List<double>? gap;
+  const DialogContainer(
+      {Key? key,
+      this.child,
+      required this.header,
+      required this.body,
+      required this.footer,
+      this.gap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +22,7 @@ class DialogContainer extends StatelessWidget {
         insetPadding: const EdgeInsets.all(20),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Container(
+          constraints: const BoxConstraints(maxWidth: 500),
           width: double.infinity,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -29,17 +32,29 @@ class DialogContainer extends StatelessWidget {
               ? child as Widget
               : Column(mainAxisSize: MainAxisSize.min, children: [
                   header,
-                  const SizedBox(
-                    height: 25,
-                  ),
+                  gap == null
+                      ? const SizedBox(
+                          height: 25,
+                        )
+                      : SizedBox(
+                          height: gap![0],
+                        ),
                   body,
-                  const SizedBox(
-                    height: 25,
-                  ),
+                  gap == null
+                      ? const SizedBox(
+                          height: 25,
+                        )
+                      : SizedBox(
+                          height: gap![1],
+                        ),
                   footer,
-                  const SizedBox(
-                    height: 25,
-                  ),
+                  gap == null
+                      ? const SizedBox(
+                          height: 25,
+                        )
+                      : SizedBox(
+                          height: gap![2],
+                        ),
                 ]),
         ));
   }

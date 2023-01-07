@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'package:socket_io_client/socket_io_client.dart' as io;
+import 'package:tic_tac_toe/utilities/constants.dart';
+
+enum SocketConnection { connected, offline }
 
 class SocketService {
   static final SocketService _socketService = SocketService._internal();
@@ -10,40 +13,37 @@ class SocketService {
     return _socketService;
   }
 
-  final StreamController<bool> _connectionStatusStream =
-      StreamController<bool>();
+  final StreamController<SocketConnection> _connectionStatusStream =
+      StreamController<SocketConnection>();
 
-  final io.Socket _socket =
-      io.io("http://192.168.1.174:3000/", <String, dynamic>{
+  final io.Socket _socket = io.io(backendUrl, <String, dynamic>{
     "transports": ["websocket"],
     "autoConnect": true,
   });
-  bool connected = false;
+  SocketConnection _connected = SocketConnection.offline;
 
   io.Socket get socketInstance => _socket;
 
-  bool get connectionStatus => _socket.connected;
-  Stream<bool> get connectionOnChangeStream =>
-      _connectionStatusStream.stream.asBroadcastStream();
+  SocketConnection get connectionStatus => _connected;
+  Stream<SocketConnection> get connectionOnChangeStream =>
+      _connectionStatusStream.stream;
 
   init(token) async {
     _socket.auth = {"token": token};
-    if (!connected) {
+    if (!_socket.connected) {
       _socket.connect();
-      print(_socket.connected);
-      print(connected);
     }
 
     _socket.on("connect", (_) {
-      _connectionStatusStream.add(true);
-      connected = _socket.connected;
+      _connectionStatusStream.add(SocketConnection.connected);
+      _connected = SocketConnection.connected;
     });
     _socket.on("test", (data) => print(data));
     _socket.onError((data) => print("Error : $data"));
     _socket.onConnectError((data) => print("ConnectError : $data"));
     _socket.onDisconnect((data) {
-      connected = false;
-      _connectionStatusStream.add(false);
+      _connected = SocketConnection.offline;
+      _connectionStatusStream.add(SocketConnection.offline);
     });
   }
 }

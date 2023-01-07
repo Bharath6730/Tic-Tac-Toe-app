@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac_toe/providers/play_online_provider.dart';
-import 'package:tic_tac_toe/providers/play_online_provider_renewed.dart';
 import 'package:tic_tac_toe/utilities/dialog_animater.dart';
 import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
@@ -73,9 +72,7 @@ class PlayerQuitDialog extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         footer: SubmitButton(
-          backgroundColor: AppTheme.silverButtonColor,
-          shadowColor: AppTheme.silverShadowColor,
-          splashColor: AppTheme.silverHoverColor,
+          boxColor: BoxColor.silver,
           radius: 15,
           onPressed: onPressed,
           child: Text(

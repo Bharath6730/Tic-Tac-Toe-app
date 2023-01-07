@@ -150,4 +150,13 @@ class LogicProvider {
       playerType = Player.X;
     }
   }
+
+  String get currentPlayerString {
+    // Overridden in respective providers
+    return "";
+  }
+
+  String get winnerText {
+    return "You Won!";
+  }
 }

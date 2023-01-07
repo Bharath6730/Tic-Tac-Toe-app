@@ -1,3 +1,5 @@
+enum BoxColor { blue, yellow, grey, silver, dark, dialog, none }
+
 enum GameMode { passAndPlay, playVsCPU, playOnline }
 
 enum ButtonType { X, O, none }

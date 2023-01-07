@@ -61,4 +61,9 @@ class PassAndPlayProvider extends LogicProvider with ChangeNotifier {
       // incrementKey("games");
     }
   }
+
+  @override
+  String get currentPlayerString {
+    return (playerType == Player.X) ? " X " : " O ";
+  }
 }

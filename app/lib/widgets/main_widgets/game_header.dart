@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
 import 'package:tic_tac_toe/widgets/buttons/center_button.dart';
 import 'package:tic_tac_toe/widgets/buttons/submit_button.dart';
@@ -16,23 +17,20 @@ class GameHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.25,
-          ),
-          CenterHeader(currentPlayer: currentPlayer),
-          const SizedBox(
-            width: 10,
-          ),
-          refreshRequired
-              ? SubmitButton(
-                  shadowColor: AppTheme.darkShadow,
-                  backgroundColor: AppTheme.dialogColor,
-                  splashColor: AppTheme.darkShadow,
+    double width = MediaQuery.of(context).size.width;
+    return Stack(
+      children: [
+        Align(
+            alignment: Alignment.center,
+            child: CenterHeader(currentPlayer: currentPlayer)),
+        refreshRequired
+            ? Positioned(
+                top: 0,
+                right: width / 10,
+                bottom: 0,
+                child: SubmitButton(
+                  size: const BoxConstraints(maxWidth: 50),
+                  boxColor: BoxColor.dialog,
                   onPressed: onRefreshClick != null
                       ? onRefreshClick as VoidCallback
                       : () {},
@@ -40,10 +38,10 @@ class GameHeader extends StatelessWidget {
                   child: const Center(
                     child: Icon(Icons.refresh_rounded, color: Colors.white),
                   ),
-                )
-              : const SizedBox(),
-        ],
-      ),
+                ),
+              )
+            : const SizedBox(),
+      ],
     );
   }
 }
@@ -59,12 +57,11 @@ class CenterHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CenterButton(
+      pad: const [10, 40],
       contentText: "$currentPlayer TURN",
       color: AppTheme.silverButtonColor,
       shadowColor: AppTheme.darkShadow,
       backgroundColor: AppTheme.dialogColor,
-      splashColor: AppTheme.darkShadow,
-      onPressed: () {},
       radius: 10,
     );
   }

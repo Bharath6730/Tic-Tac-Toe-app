@@ -19,10 +19,16 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
       }
     case "/passAndPlay":
       {
+        if (settings.arguments == null) {
+          return animatedPage(const HomeScreen(), settings);
+        }
         return animatedPage(const PassAndPlayScreen(), settings);
       }
     case "/playVsCPU":
       {
+        if (settings.arguments == null) {
+          return animatedPage(const HomeScreen(), settings);
+        }
         return animatedPage(const PlayVsCPUScreen(), settings);
       }
 
@@ -32,6 +38,9 @@ Route<dynamic>? generateRoute(RouteSettings settings) {
       }
     case "/playOnlineGameScreen":
       {
+        if (settings.arguments == null) {
+          return animatedPage(const OnlinePlayWelcomeWidget(), settings);
+        }
         return animatedPage(const PlayOnlineScreen(), settings);
       }
 

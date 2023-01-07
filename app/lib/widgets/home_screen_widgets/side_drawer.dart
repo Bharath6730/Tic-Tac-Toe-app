@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/providers/global_provider.dart';
-import 'package:tic_tac_toe/utilities/profile_img_decoration.dart';
+import 'package:tic_tac_toe/utilities/profile_img.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
 
 class SideDrawer extends StatelessWidget {
@@ -18,8 +18,7 @@ class SideDrawer extends StatelessWidget {
         const SizedBox(
           height: 50,
         ),
-        Container(
-            width: 100, height: 100, decoration: profileImageDecoration()),
+        const ProfileImage(height: 100, width: 100),
         const SizedBox(
           height: 15,
         ),

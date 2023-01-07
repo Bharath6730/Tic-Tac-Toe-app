@@ -3,43 +3,29 @@ import 'package:provider/provider.dart';
 
 import 'package:tic_tac_toe/providers/global_provider.dart';
 import 'package:tic_tac_toe/services/socket_service.dart';
-import 'package:tic_tac_toe/utilities/profile_img_decoration.dart';
+import 'package:tic_tac_toe/utilities/navbar_animated_body.dart';
+import 'package:tic_tac_toe/widgets/home_screen_widgets/bottom_nav_bar.dart';
 import 'package:tic_tac_toe/widgets/home_screen_widgets/home_page.dart';
 import 'package:tic_tac_toe/widgets/home_screen_widgets/side_drawer.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
-// class _HomeScreenState extends State<HomeScreen>{
-  //   with AutomaticKeepAliveClientMixin {
-  // final SocketService socketService = SocketService();
-  // late final StreamSubscription _connectionStream;
+class _HomeScreenState extends State<HomeScreen> {
+  int selectedOption = 0;
 
-  // @override
-  // bool get wantKeepAlive => true;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _connectionStream =
-  //       socketService.connectionOnChangeStream.listen((bool value) {
-  //     print("Connection status : $value");
-  //   });
-  // }
-
-  // @override
-  // void dispose() {
-  //   _connectionStream.cancel();
-  //   super.dispose();
-  // }
+  void changeBody(value) {
+    setState(() {
+      selectedOption = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // super.build(context);
     GlobalProvider globalProvider = Provider.of<GlobalProvider>(context);
 
     String token = globalProvider.userData!.token;
@@ -47,19 +33,46 @@ class HomeScreen extends StatelessWidget {
     socketService.init(token);
 
     return Scaffold(
-        drawer: const SideDrawer(),
-        appBar: AppBar(
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Container(
-                margin: const EdgeInsets.only(right: 6),
-                width: 40,
-                decoration: profileImageDecoration(),
-              ),
-            )
-          ],
+      appBar: AppBar(
+        actions: const [
+          Padding(
+              padding: EdgeInsets.fromLTRB(10, 10, 20, 10),
+              child: Icon(
+                Icons.notifications_outlined,
+                size: 20,
+              ))
+        ],
+      ),
+      drawer: const SideDrawer(),
+      bottomNavigationBar: BottomNavBar(
+        selectedOption: selectedOption,
+        onTap: changeBody,
+      ),
+      body: GetAnimatedBody(
+        child: getBody(selectedOption),
+      ),
+    );
+  }
+}
+
+Widget getBody(value) {
+  switch (value) {
+    case 0:
+      return const HomePage();
+    case 1:
+      return const Center(
+          child: Text(
+        "Friends Page",
+        style: TextStyle(color: Colors.white54),
+      ));
+    case 2:
+      return const Center(
+        child: Text(
+          "Profile Page",
+          style: TextStyle(color: Colors.white54),
         ),
-        body: const HomePage());
+      );
+    default:
+      return const HomePage();
   }
 }

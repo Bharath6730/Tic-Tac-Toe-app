@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/models/user_model.dart';
 import 'package:tic_tac_toe/providers/global_provider.dart';
 import 'package:tic_tac_toe/providers/play_online_provider.dart';
-import 'package:tic_tac_toe/providers/play_online_provider_renewed.dart';
 import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/utilities/show_snackbar.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
@@ -69,20 +68,14 @@ class _OnlinePlayWelcomeWidgetState extends State<OnlinePlayWelcomeWidget> {
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
-                              ?.copyWith(color: Colors.white),
+                              ?.copyWith(color: Colors.white54),
                         ),
                         SubmitButton(
-                          shadowColor: provider.connected
-                              ? AppTheme.xShadowColor
-                              : Colors.grey.withOpacity(0.8),
-                          backgroundColor: provider.connected
-                              ? AppTheme.xbuttonColor
-                              : Colors.grey,
-                          splashColor: provider.connected
-                              ? AppTheme.xHoverColor
-                              : Colors.grey,
+                          boxColor: provider.connected
+                              ? BoxColor.blue
+                              : BoxColor.grey,
                           onPressed: provider.createGame,
-                          radius: 15,
+                          radius: 8,
                           child: provider.gameState == GameState.creating
                               ? const SizedCircularProgressIndicator()
                               : Text("Get Room Code",
@@ -98,7 +91,7 @@ class _OnlinePlayWelcomeWidgetState extends State<OnlinePlayWelcomeWidget> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Center(
-                            child: Text("Join Game",
+                            child: Text("Join Game: ",
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge
@@ -108,10 +101,12 @@ class _OnlinePlayWelcomeWidgetState extends State<OnlinePlayWelcomeWidget> {
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall
-                              ?.copyWith(color: Colors.white),
+                              ?.copyWith(color: Colors.white54),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                        Container(
+                          constraints: const BoxConstraints(maxWidth: 500),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          width: MediaQuery.of(context).size.width * 0.5,
                           child: TextField(
                             controller: roomTextController,
                             style: const TextStyle(
@@ -136,15 +131,9 @@ class _OnlinePlayWelcomeWidgetState extends State<OnlinePlayWelcomeWidget> {
                           ),
                         ),
                         SubmitButton(
-                          shadowColor: provider.connected
-                              ? AppTheme.oShadowColor
-                              : Colors.grey.withOpacity(0.8),
-                          backgroundColor: provider.connected
-                              ? AppTheme.oButtonColor
-                              : Colors.grey,
-                          splashColor: provider.connected
-                              ? AppTheme.oHoverColor
-                              : Colors.grey,
+                          boxColor: provider.connected
+                              ? BoxColor.yellow
+                              : BoxColor.grey,
                           onPressed: () {
                             if (roomTextController.text.isNotEmpty) {
                               provider.joinGame(roomTextController.text);
@@ -153,12 +142,19 @@ class _OnlinePlayWelcomeWidgetState extends State<OnlinePlayWelcomeWidget> {
                                   "Please enter room code to join game.");
                             }
                           },
-                          radius: 15,
+                          radius: 8,
                           child: provider.gameState == GameState.joining
                               ? const SizedCircularProgressIndicator()
-                              : Text("Join Game",
-                                  style:
-                                      Theme.of(context).textTheme.bodyMedium),
+                              : Row(mainAxisSize: MainAxisSize.min, children: [
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    "Join Game",
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(width: 10),
+                                ]),
                         ),
                       ],
                     ),
@@ -201,7 +197,7 @@ class CenterContainer extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         height: height,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(5),
             color: Theme.of(context).appBarTheme.backgroundColor),
         child: child);
   }

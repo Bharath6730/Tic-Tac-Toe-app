@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tic_tac_toe/utilities/enums.dart';
@@ -13,10 +15,12 @@ class PlayerSelectionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      constraints: BoxConstraints(
+          maxWidth: max(MediaQuery.of(context).size.width * 0.4, 800)),
       padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 15),
       width: MediaQuery.of(context).size.width * 0.8,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(8),
           boxShadow: const [
             BoxShadow(
               color: AppTheme.darkShadow,
@@ -42,7 +46,7 @@ class PlayerSelectionWidget extends StatelessWidget {
             height: 90,
             padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 20),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(8),
                 color: AppTheme.darkBackground),
             child: Row(
               children: [
@@ -101,7 +105,7 @@ class SelectedButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 13),
         constraints: const BoxConstraints.expand(),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(8),
             color: selected
                 ? AppTheme.silverButtonColor
                 : AppTheme.darkBackground),
@@ -114,8 +118,3 @@ class SelectedButton extends StatelessWidget {
     ));
   }
 }
-
-// LayoutBuilder(builder: (context, constraints) {
-// print("Height:" + constraints.maxHeight.toString());
-// print("Width:" + constraints.maxWidth.toString());
-// }),

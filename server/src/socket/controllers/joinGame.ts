@@ -26,6 +26,9 @@ export default async function joinGame(
     let gameData = await getGameData(room)
 
     if (gameData.player2 === undefined) {
+        if (socket.user.publicId === gameData.player1.publicId) {
+            return socket.emit("invalidRoom", { message: "Cannot add self" })
+        }
         //Player 2  Joins at start
         let player2 = gameData.player2
         gameData.player2 = socket.user

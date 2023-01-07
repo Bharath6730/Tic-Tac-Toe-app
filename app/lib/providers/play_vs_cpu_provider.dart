@@ -125,6 +125,16 @@ class PlayVsCPUProvider extends LogicProvider with ChangeNotifier {
     return randomInt;
   }
 
+  @override
+  String get currentPlayerString {
+    return (myTurn) ? "Your" : "CPU's";
+  }
+
+  @override
+  String get winnerText {
+    return didIWin ? "You Won!" : "CPU Wins!";
+  }
+
   void cpuStartsGame() {
     myTurn = false;
     fillNextButton();

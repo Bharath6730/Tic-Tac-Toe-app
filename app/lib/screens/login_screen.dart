@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/models/user_model.dart';
 import 'package:tic_tac_toe/providers/global_provider.dart';
 import 'package:tic_tac_toe/services/api_service.dart';
+import 'package:tic_tac_toe/utilities/enums.dart';
 import 'package:tic_tac_toe/utilities/show_snackbar.dart';
 import 'package:tic_tac_toe/utilities/utlility.dart';
 import 'package:tic_tac_toe/widgets/buttons/submit_button.dart';
@@ -83,9 +84,7 @@ class LoginScreen extends StatelessWidget {
       ),
       Center(
         child: SubmitButton(
-          backgroundColor: AppTheme.silverButtonColor,
-          shadowColor: AppTheme.silverShadowColor,
-          splashColor: AppTheme.silverHoverColor,
+          boxColor: BoxColor.silver,
           onPressed: () async {
             if (!formKey.currentState!.validate()) {
               showSnackBar(context, "Please enter a valid Name");

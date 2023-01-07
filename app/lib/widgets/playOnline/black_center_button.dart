@@ -18,8 +18,6 @@ class BlackCenterButton extends StatelessWidget {
         color: AppTheme.silverButtonColor,
         shadowColor: AppTheme.darkShadow,
         backgroundColor: AppTheme.dialogColor,
-        splashColor: AppTheme.darkShadow,
-        onPressed: () {},
         radius: 10,
       ),
     );

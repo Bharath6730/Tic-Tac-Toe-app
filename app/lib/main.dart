@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tic_tac_toe/providers/global_provider.dart';
 import 'package:tic_tac_toe/router.dart' as router;
+import 'package:tic_tac_toe/services/socket_service.dart';
 
 GlobalProvider _gb = GlobalProvider();
 void main() async {
@@ -14,8 +15,15 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GlobalProvider>.value(
-      value: _gb,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<GlobalProvider>.value(
+          value: _gb,
+        ),
+        StreamProvider<SocketConnection>(
+            create: (context) => SocketService().connectionOnChangeStream,
+            initialData: SocketService().connectionStatus)
+      ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Tic Tac Toe App',

@@ -37,7 +37,7 @@ class XOButton extends StatelessWidget {
             color: (buttonData.isWinnerButton == true)
                 ? winnerBgColor
                 : themeData.appBarTheme.backgroundColor,
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(8),
             boxShadow: const [
               BoxShadow(
                 color: AppTheme.darkShadow,
@@ -63,7 +63,7 @@ class XOButton extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () => onButtonClick(id),
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(8),
                 child: Container(
                   width: double.infinity,
                   height: double.infinity,

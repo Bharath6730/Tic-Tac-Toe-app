@@ -3,12 +3,15 @@ import 'package:tic_tac_toe/utilities/enums.dart';
 
 String getAssetLink(ButtonType buttonType) {
   if (buttonType == ButtonType.none) return "";
-  if (buttonType == ButtonType.X) return "assets/images/x_filled.svg";
-  return "assets/images/o_filled.svg";
+  if (buttonType == ButtonType.X) return "assets/svg/game/x_filled.svg";
+  return "assets/svg/game/o_filled.svg";
 }
 
 class AppTheme {
-  static const Color xbuttonColor = Color(0xff31c3bd);
+  // static const Color xbuttonColor = Color(0xff7EC8E3);
+  // static const Color xbuttonColor = Color(0xff189AB4);
+  // static const Color xbuttonColor = Color(0xff31c3bd); //Original
+  static const Color xbuttonColor = Color(0xff47B4B0);
   static const Color xHoverColor = Color(0xff65e9e4);
   static const Color xShadowColor = Color(0xff118c87);
 
@@ -23,4 +26,6 @@ class AppTheme {
   static const Color darkShadow = Color(0xff10212a);
   static const Color dialogColor = Color(0xff1f3641);
   static const Color darkBackground = Color(0xff1a2a33);
+
+  static const Color darkBlue = Color(0xff3B6072);
 }

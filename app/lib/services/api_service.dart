@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:tic_tac_toe/utilities/constants.dart';
 
 class ApiService {
   static Future<http.Response?> loginUser(
@@ -8,7 +9,7 @@ class ApiService {
     try {
       final body = jsonEncode(
           {'emailOrUsername': userNameOrEmail, 'password': password});
-      final url = Uri.http("192.168.1.174:3000", "/login");
+      final url = Uri.http(backendDomain, "/login");
       var response = await http
           .post(url, body: body, headers: {'Content-Type': 'application/json'});
       return response;
